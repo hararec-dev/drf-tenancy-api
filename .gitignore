@@ -70,7 +70,6 @@ doc/build/
 
 # Dependency Files
 requirements.txt.lock
-pipfile.lock
 
 # Docker Configuration Files
 docker-compose.override.yml
