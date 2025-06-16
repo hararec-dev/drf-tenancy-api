@@ -7,6 +7,8 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "config.middleware.logging_middleware.RequestLoggingMiddleware",
+    "config.middleware.global_logging_middleware.GlobalLoggingMiddleware",
 ]
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(
