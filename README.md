@@ -1,7 +1,9 @@
-# 🚀 Boilerplate - Microservicio Django REST Framework
+# 🚀 Boilerplate - API Django REST Framework
 
 **🔍 Descripción General** 
-Boilerplate para API REST con Django REST Framework (Python) usando una arquitectura organizada (siguiendo las convenciones de Django y DRF), Docker y buenas prácticas. Está inspirado en las convenciones de Django y patrones comunes de la comunidad.
+Boilerplate para API con Django REST Framework (Python) usando una arquitectura organizada (siguiendo las convenciones de Django y DRF), Docker y buenas prácticas. Está inspirado en las convenciones de Django y patrones comunes de la comunidad. 
+
+> Incluye herramientas de calidad de código como Black para formateo, pre-commit para hooks de git, pytest y pytest-django para testing, coverage para medición de cobertura de código, y flake8 para análisis estático, asegurando así los más altos estándares de desarrollo.
 
 ## 📚 Tabla de Contenidos
 1. [Requisitos Previos](#⚙️-requisitos-previos)
@@ -11,36 +13,64 @@ Boilerplate para API REST con Django REST Framework (Python) usando una arquitec
 5. [Documentación Extra](#📄-documentación-extra)
 
 ## ⚙️ Requisitos Previos
-* Python 3.12.3+
+* Python 3.13.4+ y Pipenv
 * Docker 24.0+ y Docker Compose
 
 ## 🛠️ Instalación
-Clona el repositorio:
+
+### 1. Clonar el repositorio
+
 ```bash
-git clone https://github.com/hararec-dev/boilerplate-ms-drf.git
-cd boilerplate-ms-drf
+git clone git@github.com:hararec-dev/boilerplate-api-drf.git
+cd boilerplate-api-drf
 cp .env.example .env
+# (Opcional) Personaliza el archivo .env según tus necesidades
 ```
 
-Configuración Local (sin Docker)
+---
+
+### 2. Configuración para desarrollo local
+
 ```bash
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements/base.in
+# Instala los hooks de pre-commit
+pre-commit install
+
+# (Opcional) Ejecuta todos los linters y formateadores manualmente
+pre-commit run --all-files
+
+# Levanta una base de datos local con Docker
+docker compose -f docker-compose.dev.yml up -d --build
+
+# Instala las dependencias del entorno virtual
+pipenv install --dev
+pipenv shell
+
+# Aplica las migraciones
 python manage.py makemigrations
 python manage.py migrate
+
+# Inicia el servidor de desarrollo
 python manage.py runserver
 ```
 
-#### Configuración con Docker
+> La API estará disponible en: [http://localhost:8000](http://localhost:8000)
+
+---
+
+### 3. Configuración para producción
+
 ```bash
-docker-compose up --build
+# Ejecuta la API con múltiples instancias (por ejemplo: n=2)
+docker compose -f docker-compose.prod.yml up -d --build --scale api=n
+
+# Puedes acceder al contenedor de la API con:
+docker exec -it boilerplate-api-drf-api-1 /bin/bash
 ```
-La API estará disponible en http://localhost:8000
+
 
 
 ## 👥 Contribución
-1. Haz fork del proyecto (https://github.com/hararec-dev/boilerplate-ms-drf.git)
+1. Haz fork del proyecto (https://github.com/hararec-dev/boilerplate-api-drf.git)
 2. Crea tu branch: git checkout -b feature/nueva-funcionalidad
 3. Realiza tus cambios y haz commit: git commit -m "Agrega nueva funcionalidad"
 4. Push al branch: git push origin feature/nueva-funcionalidad
