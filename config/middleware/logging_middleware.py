@@ -12,7 +12,7 @@ class RequestLoggingMiddleware:
         request.request_id = str(uuid.uuid4())
 
         logger.info(
-            f"Iniciando solicitud: {request.method} {request.path}",
+            f"Starting request: {request.method} {request.path}",
             extra={
                 "user": (
                     request.user.email
