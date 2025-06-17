@@ -1,83 +1,76 @@
-# 🚀 Boilerplate - Microservicio Django REST Framework
+# 🚀 Boilerplate - API Django REST Framework
 
 **🔍 Descripción General** 
-Boilerplate para API REST con Django REST Framework (Python) usando una arquitectura organizada (siguiendo las convenciones de Django y DRF), Docker y buenas prácticas. Está inspirado en las convenciones de Django y patrones comunes de la comunidad.
+Boilerplate para API con Django REST Framework (Python) usando una arquitectura organizada (siguiendo las convenciones de Django y DRF), Docker y buenas prácticas. Está inspirado en las convenciones de Django y patrones comunes de la comunidad. 
+
+> Incluye herramientas de calidad de código como Black para formateo, pre-commit para hooks de git, pytest y pytest-django para testing, coverage para medición de cobertura de código, y flake8 para análisis estático, asegurando así los más altos estándares de desarrollo.
 
 ## 📚 Tabla de Contenidos
 1. [Requisitos Previos](#⚙️-requisitos-previos)
 2. [Instalación](#🛠️-instalación)
-3. [Uso de la API](#📡-uso-de-la-api)
-4. [Contribución](#👥-contribución)
-5. [Licencia](#📜-licencia)
+3. [Contribución](#👥-contribución)
+4. [Licencia](#📜-licencia)
+5. [Documentación Extra](#📄-documentación-extra)
 
 ## ⚙️ Requisitos Previos
-* Python 3.12.3+
+* Python 3.13.4+ y Pipenv
 * Docker 24.0+ y Docker Compose
 
 ## 🛠️ Instalación
-Configuración Local (sin Docker)
+
+### 1. Clonar el repositorio
+
 ```bash
-# Clonar repositorio
-git clone https://github.com/hararec-dev/boilerplate-ms-drf.git
-cd boilerplate-ms-drf
-# Crear y activar un entorno virtual (recomendado)
-python -m venv venv
-# En Linux/macOS:
-source venv/bin/activate
-# En Windows:
-# venv\Scripts\activate
-# Instalar dependencias
-pip install -r requirements/base.in
-# Configurar entorno (copiar variables de entorno)
+git clone git@github.com:hararec-dev/boilerplate-api-drf.git
+cd boilerplate-api-drf
 cp .env.example .env
-# (Asegúrate de configurar las variables en .env, especialmente la base de datos si no usas Docker)
-# Aplicar migraciones de la base de datos
+# (Opcional) Personaliza el archivo .env según tus necesidades
+```
+
+---
+
+### 2. Configuración para desarrollo local
+
+```bash
+# Instala los hooks de pre-commit
+pre-commit install
+
+# (Opcional) Ejecuta todos los linters y formateadores manualmente
+pre-commit run --all-files
+
+# Levanta una base de datos local con Docker
+docker compose -f docker-compose.dev.yml up -d --build
+
+# Instala las dependencias del entorno virtual
+pipenv install --dev
+pipenv shell
+
+# Aplica las migraciones
+python manage.py makemigrations
 python manage.py migrate
-# Crear un superusuario (opcional, para acceder al admin de Django)
-python manage.py createsuperuser
-# Iniciar el servidor de desarrollo
+
+# Inicia el servidor de desarrollo
 python manage.py runserver
-# La API estará disponible en http://localhost:8000
 ```
 
-#### Configuración con Docker
+> La API estará disponible en: [http://localhost:8000](http://localhost:8000)
+
+---
+
+### 3. Configuración para producción
+
 ```bash
-# Clonar repositorio
-git clone https://github.com/tu-usuario/boilerplate-drf.git
-cd boilerplate-drf
-# Configurar entorno (Docker Compose usará .env por defecto)
-cp .env.example .env
-# (Ajusta las variables en .env si es necesario, especialmente las credenciales de la BD que usará Docker)
-# Iniciar contenedores con Docker Compose
-docker-compose up --build
-# O si tu versión de docker es más reciente:
-# docker compose up --build
-# La API estará disponible en http://localhost:8000 (o el puerto que hayas mapeado en docker-compose.yml)
-# Para ejecutar comandos de manage.py dentro del contenedor de Docker (ej. crear superusuario):
-# docker-compose exec web python manage.py createsuperuser
+# Ejecuta la API con múltiples instancias (por ejemplo: n=2)
+docker compose -f docker-compose.prod.yml up -d --build --scale api=n
+
+# Puedes acceder al contenedor de la API con:
+docker exec -it boilerplate-api-drf-api-1 /bin/bash
 ```
 
-## 📡 Uso de la API
-La API base se encuentra en http://localhost:8000/api/v1/ (o el puerto que hayas configurado).
-🔑 Autenticación (Ejemplo con Token - Simple JWT)
-Si estás usando djangorestframework-simplejwt o similar:
-```bash
-# Ejemplo de login para obtener un token JWT con curl
-curl -X POST http://localhost:8000/api/v1/auth/token/ \
-  -H "Content-Type: application/json" \
-  -d '{"username": "tu_usuario", "password": "tu_password"}'
-# Respuesta esperada:
-# {
-#   "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-#   "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-# }
-# Luego, para acceder a rutas protegidas:
-curl -X GET http://localhost:8000/api/v1/tu-endpoint-protegido/ \
-  -H "Authorization: Bearer TU_ACCESS_TOKEN"
-```
+
 
 ## 👥 Contribución
-1. Haz fork del proyecto (https://github.com/hararec-dev/boilerplate-ms-drf.git)
+1. Haz fork del proyecto (https://github.com/hararec-dev/boilerplate-api-drf.git)
 2. Crea tu branch: git checkout -b feature/nueva-funcionalidad
 3. Realiza tus cambios y haz commit: git commit -m "Agrega nueva funcionalidad"
 4. Push al branch: git push origin feature/nueva-funcionalidad
@@ -87,4 +80,12 @@ curl -X GET http://localhost:8000/api/v1/tu-endpoint-protegido/ \
 MIT License - Ver [LICENSE](LICENCE) para más detalles.
 
 * 🔄 Estado Actual: En desarrollo activo
-* 📧 Contacto: hararecdev@ejemplo.com
+* 🌐 ¡Visita mi web!: https://hararecdev.com
+
+## 📄 Documentación Extra
+Aquí puedes encontrar las plantillas de documentación utilizadas en este proyecto:
+* [Documento de Especificación de Requisitos de Software (ERS)](./docs/ERS.md)
+* [Documentación de Operaciones (OpsDocs)](./docs/OPS_DOCS.md)
+* [Software Design Document (SDD)](./docs/SDD.md)
+* [Documentación de Visión del Producto (Vision)](./docs/VISION.md)
+* [Management Plan (Plan de Gestión)](./docs/MANAGEMENT_PLAN.md)

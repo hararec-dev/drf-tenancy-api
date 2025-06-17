@@ -22,6 +22,7 @@ wheels/
 MANIFEST
 
 # Django
+/logs/
 *.log
 local_settings.py
 db.sqlite3
@@ -69,7 +70,6 @@ doc/build/
 
 # Dependency Files
 requirements.txt.lock
-pipfile.lock
 
 # Docker Configuration Files
 docker-compose.override.yml
