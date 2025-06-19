@@ -1,8 +1,9 @@
-import os
 import logging
-from decouple import config
-from pathlib import Path
+import os
 from logging.handlers import RotatingFileHandler
+from pathlib import Path
+
+from decouple import config
 from django.core.exceptions import ImproperlyConfigured
 
 BASE_ROOT = Path(__file__).resolve().parent.parent.parent

@@ -1,5 +1,6 @@
 from datetime import timedelta
-from decouple import config, Csv
+
+from decouple import Csv, config
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

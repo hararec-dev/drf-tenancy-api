@@ -23,6 +23,7 @@ pytest = "*"
 coverage = "*"
 pytest-django = "*"
 flake8 = "*"
+isort = "*"
 
 [requires]
 python_version = "3.13"

@@ -4,6 +4,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.db import models
+
 from apps.base.models.base_audit_model import BaseAuditModel
 
 
