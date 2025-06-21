@@ -3,7 +3,7 @@ BASE_APPS = [
     "django.contrib.contenttypes",
 ]
 LOCAL_APPS = [
-    "apps.base",
+    "apps.core",
     "apps.users",
 ]
 THIRD_PARTY_APPS = [

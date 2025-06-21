@@ -28,6 +28,6 @@ REST_FRAMEWORK = {
         "user": config("THROTTLE_RATE_USER", default="2000/day"),
         "sensitive": config("THROTTLE_RATE_SENSITIVE", default="10/hour"),
     },
-    "EXCEPTION_HANDLER": "apps.base.utils.app_exception_handler",
+    "EXCEPTION_HANDLER": "apps.core.utils.app_exception_handler",
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }

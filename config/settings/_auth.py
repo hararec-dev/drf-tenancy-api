@@ -25,7 +25,6 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(
         days=config("REFRESH_TOKEN_LIFETIME", default=1, cast=int)
     ),
-    "TOKEN_OBTAIN_SERIALIZER": "apps.users.serializers.CustomTokenObtainPairSerializer",
     "SIGNING_KEY": config("JWT_SIGNING_KEY"),
     "AUTH_HEADER_TYPES": ("Bearer",),
     "USER_ID_FIELD": "id",
