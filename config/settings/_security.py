@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 from decouple import Csv, config
 
 MIDDLEWARE = [
@@ -11,19 +9,7 @@ MIDDLEWARE = [
     "config.middleware.logging_middleware.RequestLoggingMiddleware",
     "config.middleware.global_logging_middleware.GlobalLoggingMiddleware",
 ]
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(
-        minutes=config("ACCESS_TOKEN_LIFETIME", default=5, cast=int)
-    ),
-    "REFRESH_TOKEN_LIFETIME": timedelta(
-        days=config("REFRESH_TOKEN_LIFETIME", default=1, cast=int)
-    ),
-    "SIGNING_KEY": config("JWT_SIGNING_KEY"),
-    "AUTH_HEADER_TYPES": ("Bearer",),
-    "USER_ID_FIELD": "id",
-    "USER_ID_CLAIM": "user_id",
-    "ALGORITHM": "HS256",
-}
+
 SECURE_SSL_REDIRECT = config("SECURE_SSL_REDIRECT", default=False, cast=bool)
 SECURE_HSTS_SECONDS = config("SECURE_HSTS_SECONDS", default=0, cast=int)
 SECURE_HSTS_INCLUDE_SUBDOMAINS = config(
