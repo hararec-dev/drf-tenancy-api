@@ -4,6 +4,7 @@ BASE_APPS = [
 ]
 LOCAL_APPS = [
     "apps.core",
+    "apps.tenancies",
     "apps.users",
 ]
 THIRD_PARTY_APPS = [
