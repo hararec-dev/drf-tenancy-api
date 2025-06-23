@@ -1,6 +1,6 @@
-from ._base import *
 from ._apps import *
 from ._auth import *
+from ._base import *
 from ._database import *
 from ._i18n_timezone import *
 from ._logging import *

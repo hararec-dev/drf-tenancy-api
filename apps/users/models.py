@@ -1,59 +1,66 @@
 from django.contrib.auth.models import (
     AbstractBaseUser,
-    BaseUserManager,
     PermissionsMixin,
 )
 from django.db import models
-from apps.base.models.base_audit_model import BaseAuditModel
+from django.utils.translation import gettext_lazy as _
+
+from apps.tenancies.models import Tenant
+
+from .managers import UserManager
 
 
-class UserManager(BaseUserManager):
-    def create_user(self, email, password=None, **extra_fields):
-        if not email:
-            raise ValueError("The Email field must be set")
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
+class User(AbstractBaseUser, PermissionsMixin):
+    """
+    Custom user model. A user always belongs to a tenant.
+    Corresponds to the 'users' table.
+    """
 
-    def create_superuser(self, email, password=None, **extra_fields):
-        extra_fields.setdefault("is_staff", True)
-        extra_fields.setdefault("is_superuser", True)
-
-        if extra_fields.get("is_staff") is not True:
-            raise ValueError("Superuser must have is_staff=True.")
-        if extra_fields.get("is_superuser") is not True:
-            raise ValueError("Superuser must have is_superuser=True.")
-        return self.create_user(email, password, **extra_fields)
-
-
-class User(AbstractBaseUser, PermissionsMixin, BaseAuditModel):
-    email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=30, blank=True)
-    last_name = models.CharField(max_length=30, blank=True)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-
-    groups = models.ManyToManyField(
-        "auth.Group",
-        verbose_name="groups",
+    tenant = models.ForeignKey(
+        Tenant,
+        on_delete=models.CASCADE,
+        verbose_name=_("tenant"),
+        null=True,
         blank=True,
-        help_text="The groups this user belongs to. A user will get all permissions granted to each of their groups.",
-        related_name="user_set_custom",
-        related_query_name="user_custom",
+        help_text=_("The tenant the user belongs to. Null for system superadmins."),
     )
-    user_permissions = models.ManyToManyField(
-        "auth.Permission",
-        verbose_name="user permissions",
-        blank=True,
-        help_text="Specific permissions for this user.",
-        related_name="user_set_custom_permissions",
-        related_query_name="user_custom_permissions",
+    email = models.EmailField(_("email"), max_length=255, unique=True)
+    first_name = models.CharField(_("first name"), max_length=255, blank=True)
+    last_name = models.CharField(_("last name"), max_length=255, blank=True)
+    avatar_url = models.URLField(_("avatar URL"), max_length=255, blank=True, null=True)
+    mfa_secret = models.CharField(
+        _("MFA secret"), max_length=100, blank=True, null=True
     )
+    is_active = models.BooleanField(_("active"), default=True)
+    is_staff = models.BooleanField(
+        _("staff"),
+        default=False,
+        help_text=_("Designates whether the user can log into the admin site."),
+    )
+    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
+    updated_at = models.DateTimeField(_("updated at"), auto_now=True)
+    deleted_at = models.DateTimeField(_("deleted at"), null=True, blank=True)
+
     objects = UserManager()
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
+    class Meta:
+        db_table = "users"
+        verbose_name = _("user")
+        verbose_name_plural = _("users")
+        unique_together = [["tenant", "email"]]
+        indexes = [
+            models.Index(fields=["tenant"], name="idx_users_tenant_id"),
+            models.Index(
+                fields=["tenant", "is_active"], name="idx_users_tenant_id_is_active"
+            ),
+        ]
+
     def __str__(self):
         return self.email
+
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}".strip()

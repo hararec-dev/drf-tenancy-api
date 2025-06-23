@@ -1,5 +1,6 @@
-from decouple import config
 from pathlib import Path
+
+from decouple import config
 
 STATIC_URL = config("STATIC_URL", default="static/")
 MEDIA_URL = "/media/"

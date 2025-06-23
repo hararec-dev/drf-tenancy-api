@@ -3,7 +3,6 @@ from decouple import config
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-        "oauth2_provider.contrib.rest_framework.OAuth2Authentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
@@ -29,6 +28,6 @@ REST_FRAMEWORK = {
         "user": config("THROTTLE_RATE_USER", default="2000/day"),
         "sensitive": config("THROTTLE_RATE_SENSITIVE", default="10/hour"),
     },
-    "EXCEPTION_HANDLER": "apps.base.utils.app_exception_handler",
+    "EXCEPTION_HANDLER": "apps.core.utils.app_exception_handler",
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
