@@ -6,8 +6,8 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "config.middleware.logging_middleware.RequestLoggingMiddleware",
-    "config.middleware.global_logging_middleware.GlobalLoggingMiddleware",
+    "apps.core.middleware.LoggingMiddleware",
+    "apps.tenancies.middleware.TenantMiddleware",
 ]
 
 SECURE_SSL_REDIRECT = config("SECURE_SSL_REDIRECT", default=False, cast=bool)

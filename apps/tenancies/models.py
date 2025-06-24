@@ -213,10 +213,10 @@ class Department(models.Model):
         ]
 
 
-class DepartmentUser(models.Model):
+class UserDepartmentRole(models.Model):
     """
     Intermediate table assigning a user to a department with a specific role.
-    Corresponds to the 'department_users' table.
+    Corresponds to the 'user_department_roles' table.
     """
 
     user = models.ForeignKey(
@@ -225,17 +225,15 @@ class DepartmentUser(models.Model):
     department = models.ForeignKey(
         Department, on_delete=models.CASCADE, verbose_name=_("department")
     )
-    role = models.ForeignKey(
-        Role, on_delete=models.PROTECT, verbose_name=_("role")
-    )  # PROTECT = ON DELETE RESTRICT
+    role = models.ForeignKey(Role, on_delete=models.PROTECT, verbose_name=_("role"))
 
     class Meta:
-        db_table = "department_users"
-        verbose_name = _("department user")
-        verbose_name_plural = _("department users")
+        db_table = "user_department_roles"
+        verbose_name = _("user department rol")
+        verbose_name_plural = _("user department roles")
         unique_together = [
-            ["user", "department"]
-        ]  # A user has only one role per department
+            ["user", "department", "role"],
+        ]
         indexes = [
             models.Index(fields=["user"], name="idx_dept_users_user_id"),
             models.Index(fields=["department"], name="idx_dept_users_dept_id"),

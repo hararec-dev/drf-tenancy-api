@@ -64,3 +64,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def full_name(self):
         return f"{self.first_name} {self.last_name}".strip()
+
+    def get_tenants(self):
+        """
+        Returns a queryset of all tenants the user is associated with
+        through the UserTenantRole model.
+        It uses distinct() to avoid duplicates if a user has multiple
+        roles in the same tenant.
+        """
+        tenant_ids = self.usertenantrole_set.values_list("tenant_id", flat=True)
+        return Tenant.objects.filter(id__in=tenant_ids).distinct()

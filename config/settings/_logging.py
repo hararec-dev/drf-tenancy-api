@@ -36,60 +36,55 @@ class SafeRotatingFileHandler(RotatingFileHandler):
             raise
 
 
+class SafeFormatter(logging.Formatter):
+    def format(self, record):
+        try:
+            return super().format(record)
+        except KeyError as e:
+            missing_key = e.args[0]
+            record.__dict__[missing_key] = f"!MISSING_{missing_key}!"
+            return super().format(record)
+
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
         "verbose": {
+            "()": SafeFormatter,
             "format": (
                 "[{levelname}] {asctime} "
                 "ProcessID:{process:d} ThreadID:{thread:d} "
                 "Module:{module} Function:{funcName} Line:{lineno:d} "
                 "User:{user} IP:{ip} "
-                "RequestID:{request_id} Method:{method} Path:{path}"
-                "Duration:{duration:.2f}ms "
+                "RequestID:{request_id} Method:{method} Path:{path} "
+                "Status:{status_code} Duration:{duration:.2f}ms "
                 "Details: {message}"
             ),
             "style": "{",
         },
         "simple": {
+            "()": SafeFormatter,
             "format": "[{levelname}] {asctime} {module}.{funcName}:{lineno} - {message}",
-            "style": "{",
-        },
-        "request": {
-            "format": (
-                "[{levelname}] {asctime} "
-                "RequestID:{request_id} "
-                "User:{user} IP:{ip} "
-                "Method:{method} Path:{path} Status:{status_code} "
-                "Duration:{duration:.2f}ms "
-                "Details: {message}"
-            ),
             "style": "{",
         },
     },
     "filters": {
-        "request_context": {
-            "()": "django.utils.log.CallbackFilter",
-            "callback": lambda record: getattr(record, "request", None) is not None,
-        },
-        "require_debug_false": {
-            "()": "django.utils.log.RequireDebugFalse",
-        },
+        "require_debug_false": {"()": "django.utils.log.RequireDebugFalse"},
     },
     "handlers": {
         "file": {
             "()": SafeRotatingFileHandler,
-            "filename": os.path.join(LOG_DIR, "app.log"),
-            "delay": True,
+            "filename": LOG_DIR / "app.log",
+            "maxBytes": 1024 * 1024 * 5,  # 5 MB
+            "backupCount": 5,
             "encoding": "utf-8",
         },
         "error_file": {
             "()": SafeRotatingFileHandler,
-            "filename": os.path.join(LOG_DIR, "errors.log"),
+            "filename": LOG_DIR / "errors.log",
             "maxBytes": 1024 * 1024 * 5,
             "backupCount": 5,
-            "level": "ERROR",
             "encoding": "utf-8",
         },
     },
@@ -97,48 +92,32 @@ LOGGING = {
         "handlers": ["file", "error_file"],
         "level": "INFO",
     },
-}
-
-if config("DEBUG", cast=bool):
-    # Development configuration
-    LOGGING["handlers"]["file"].update(
-        {
-            "level": "DEBUG",
-            "formatter": "simple",
-        }
-    )
-    LOGGING["handlers"]["error_file"].update(
-        {
-            "formatter": "simple",
-        }
-    )
-
-    LOGGING["root"]["level"] = "DEBUG"
-
-    LOGGING["loggers"] = {
-        "django": {
-            "handlers": ["file"],
-            "level": "INFO",
-            "propagate": False,
-        },
-        "django.db.backends": {
-            "level": "DEBUG",
-            "handlers": ["file"],
-            "propagate": False,
-        },
+    "loggers": {
         "django.request": {
             "handlers": ["file", "error_file"],
             "level": "DEBUG",
             "propagate": False,
         },
-        "django.security": {
-            "handlers": ["file", "error_file"],
-            "level": "WARNING",
-            "propagate": False,
-        },
-    }
+    },
+}
+
+if config("DEBUG", cast=bool):
+    # Development
+    LOGGING["handlers"]["file"].update(
+        {
+            "level": "DEBUG",
+            "formatter": "simple",
+        }
+    )
+    LOGGING["handlers"]["error_file"].update(
+        {
+            "level": "ERROR",
+            "formatter": "simple",
+        }
+    )
+    LOGGING["root"]["level"] = "DEBUG"
 else:
-    # Production configuration
+    # Production
     LOGGING["handlers"]["file"].update(
         {
             "level": "WARNING",
@@ -147,52 +126,8 @@ else:
     )
     LOGGING["handlers"]["error_file"].update(
         {
+            "level": "ERROR",
             "formatter": "verbose",
         }
     )
-
-    LOGGING["root"]["level"] = "WARNING"
-
-    LOGGING.update(
-        {
-            "loggers": {
-                "django": {
-                    "handlers": ["file", "error_file"],
-                    "level": "WARNING",
-                    "propagate": False,
-                    "filters": ["require_debug_false"],
-                },
-                "django.request": {
-                    "handlers": ["file", "error_file"],
-                    "level": "ERROR",
-                    "propagate": False,
-                    "filters": ["require_debug_false"],
-                },
-                "django.server": {
-                    "handlers": ["error_file"],
-                    "level": "ERROR",
-                    "propagate": False,
-                },
-                "django.db.backends": {
-                    "handlers": ["error_file"],
-                    "level": "ERROR",
-                    "propagate": False,
-                },
-                "django.security": {
-                    "handlers": ["error_file"],
-                    "level": "ERROR",
-                    "propagate": False,
-                },
-                "django.template": {
-                    "handlers": ["error_file"],
-                    "level": "ERROR",
-                    "propagate": False,
-                },
-                "custom_app": {
-                    "handlers": ["file", "error_file"],
-                    "level": "WARNING",
-                    "propagate": False,
-                },
-            },
-        }
-    )
+    LOGGING["loggers"]["django.request"]["filters"] = ["require_debug_false"]
