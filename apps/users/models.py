@@ -5,12 +5,13 @@ from django.contrib.auth.models import (
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from apps.core.models import BaseAuditModel
 from apps.tenancies.models import Tenant
 
 from .managers import UserManager
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, BaseAuditModel, PermissionsMixin):
     """
     Custom user model. A user always belongs to a tenant.
     Corresponds to the 'users' table.
@@ -31,15 +32,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     mfa_secret = models.CharField(
         _("MFA secret"), max_length=100, blank=True, null=True
     )
-    is_active = models.BooleanField(_("active"), default=True)
     is_staff = models.BooleanField(
         _("staff"),
         default=False,
         help_text=_("Designates whether the user can log into the admin site."),
     )
-    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
-    updated_at = models.DateTimeField(_("updated at"), auto_now=True)
-    deleted_at = models.DateTimeField(_("deleted at"), null=True, blank=True)
 
     objects = UserManager()
 
