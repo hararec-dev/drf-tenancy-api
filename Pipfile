@@ -21,10 +21,11 @@ dj-rest-auth = "*"
 black = "*"
 pre-commit = "*"
 pytest = "*"
-coverage = "*"
 pytest-django = "*"
 flake8 = "*"
 isort = "*"
+factory-boy = "*"
+faker = "*"
 
 [requires]
 python_version = "3.13"
