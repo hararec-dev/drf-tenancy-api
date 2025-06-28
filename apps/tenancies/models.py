@@ -3,8 +3,10 @@ from django.contrib.auth.models import Permission
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from apps.core.models import BaseAuditModel, TimestampedModel
 
-class Tenant(models.Model):
+
+class Tenant(BaseAuditModel):
     """
     Represents a tenant in the system. Each tenant is an isolated entity
     with its own users, organizations, and data.
@@ -47,9 +49,6 @@ class Tenant(models.Model):
     onboarding_completed_at = models.DateTimeField(
         _("onboarding completed at"), null=True, blank=True
     )
-    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
-    updated_at = models.DateTimeField(_("updated at"), auto_now=True)
-    deleted_at = models.DateTimeField(_("deleted at"), null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -61,7 +60,7 @@ class Tenant(models.Model):
         ordering = ["name"]
 
 
-class TenantConfiguration(models.Model):
+class TenantConfiguration(TimestampedModel):
     """
     Specific configurations for each tenant, such as branding, localization,
     and custom settings.
@@ -84,8 +83,6 @@ class TenantConfiguration(models.Model):
         default=dict,
         help_text=_("Container for various tenant-specific settings."),
     )
-    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
-    updated_at = models.DateTimeField(_("updated at"), auto_now=True)
 
     def __str__(self):
         return f"Configuration for {self.tenant.name}"
@@ -96,7 +93,7 @@ class TenantConfiguration(models.Model):
         verbose_name_plural = _("tenant configurations")
 
 
-class Role(models.Model):
+class Role(TimestampedModel):
     """
     A set of permissions that can be assigned to users.
     Can be a system role (tenant=NULL) or a tenant-specific role.
@@ -174,7 +171,7 @@ class UserTenantRole(models.Model):
         ]
 
 
-class Department(models.Model):
+class Department(BaseAuditModel):
     """
     Represents a department within a tenant.
     Corresponds to the 'departments' table.
@@ -213,10 +210,10 @@ class Department(models.Model):
         ]
 
 
-class DepartmentUser(models.Model):
+class UserDepartmentRole(models.Model):
     """
     Intermediate table assigning a user to a department with a specific role.
-    Corresponds to the 'department_users' table.
+    Corresponds to the 'user_department_roles' table.
     """
 
     user = models.ForeignKey(
@@ -225,17 +222,15 @@ class DepartmentUser(models.Model):
     department = models.ForeignKey(
         Department, on_delete=models.CASCADE, verbose_name=_("department")
     )
-    role = models.ForeignKey(
-        Role, on_delete=models.PROTECT, verbose_name=_("role")
-    )  # PROTECT = ON DELETE RESTRICT
+    role = models.ForeignKey(Role, on_delete=models.PROTECT, verbose_name=_("role"))
 
     class Meta:
-        db_table = "department_users"
-        verbose_name = _("department user")
-        verbose_name_plural = _("department users")
+        db_table = "user_department_roles"
+        verbose_name = _("user department rol")
+        verbose_name_plural = _("user department roles")
         unique_together = [
-            ["user", "department"]
-        ]  # A user has only one role per department
+            ["user", "department", "role"],
+        ]
         indexes = [
             models.Index(fields=["user"], name="idx_dept_users_user_id"),
             models.Index(fields=["department"], name="idx_dept_users_dept_id"),

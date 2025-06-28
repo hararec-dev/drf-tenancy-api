@@ -3,6 +3,7 @@ BASE_APPS = [
     "django.contrib.contenttypes",
 ]
 LOCAL_APPS = [
+    "apps.authentication",
     "apps.core",
     "apps.tenancies",
     "apps.users",

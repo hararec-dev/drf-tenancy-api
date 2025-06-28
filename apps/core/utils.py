@@ -4,13 +4,13 @@ from django.core.exceptions import ValidationError
 from django.http import Http404
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.views import exception_handler as drf_exception_handler
+from rest_framework.views import exception_handler
 
 logger = logging.getLogger(__name__)
 
 
 def app_exception_handler(exc, context):
-    response = drf_exception_handler(exc, context)
+    response = exception_handler(exc, context)
 
     status_code = (
         response.status_code
@@ -31,7 +31,7 @@ def app_exception_handler(exc, context):
 
     error_data = {
         "error": {
-            "code": status_code,
+            "status": status_code,
             "message": STATUS_CODE_MESSAGES.get(status_code, "Request error"),
             "type": exc.__class__.__name__,
         }

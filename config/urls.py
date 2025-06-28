@@ -6,14 +6,8 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
 
 urlpatterns = [
-    path("api/token", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("api/token/refresh", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/schema", SpectacularAPIView.as_view(), name="schema"),
     path(
         "api/schema/swagger-ui",
@@ -25,10 +19,10 @@ urlpatterns = [
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
     ),
+    path("api/v1/auth/", include("apps.authentication.urls")),
     re_path(
         r"^api/(?P<version>[^/]+)/users", include("apps.users.urls", namespace="users")
     ),
-    # re_path(r"^api/(?P<version>[^/]+)/<app_name>/", include("apps.<app_name>.urls", namespace="<app_name>")),
 ]
 
 if settings.DEBUG:

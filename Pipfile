@@ -16,15 +16,17 @@ uvicorn = "*"
 psycopg2-binary = "*"
 django-allauth = "*"
 dj-rest-auth = "*"
+django-redis = "*"
 
 [dev-packages]
 black = "*"
 pre-commit = "*"
 pytest = "*"
-coverage = "*"
 pytest-django = "*"
 flake8 = "*"
 isort = "*"
+factory-boy = "*"
+faker = "*"
 
 [requires]
 python_version = "3.13"
