@@ -6,10 +6,13 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.middleware.cache.UpdateCacheMiddleware",
     "apps.core.middleware.LoggingMiddleware",
     "apps.tenancies.middleware.TenantMiddleware",
+    "django.middleware.cache.FetchFromCacheMiddleware",
 ]
 
+CACHE_MIDDLEWARE_SECONDS = config("CACHE_MIDDLEWARE_SECONDS", default=300, cast=int)
 SECURE_SSL_REDIRECT = config("SECURE_SSL_REDIRECT", default=False, cast=bool)
 SECURE_HSTS_SECONDS = config("SECURE_HSTS_SECONDS", default=0, cast=int)
 SECURE_HSTS_INCLUDE_SUBDOMAINS = config(

@@ -1,4 +1,5 @@
 from decouple import config
+from django.core.cache import cache
 from django.utils.timezone import now
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -24,25 +25,32 @@ class UserLoginView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        email = request.data.get("email", "")
+        password = request.data.get("password", "")
+        cache_key = f"user_login:{email}:{password}"
+        cached = cache.get(cache_key)
+        if cached:
+            return Response(cached, status=status.HTTP_200_OK)
+
         user = serializer.validated_data["user"]
         refresh = RefreshToken.for_user(user)
         tenants = user.get_tenants()
         tenant_serializer = TenantSerializer(tenants, many=True)
 
-        return Response(
-            {
-                "data": {
-                    "organizations": tenant_serializer.data,
-                    "accessToken": str(refresh.access_token),
-                    "refreshToken": str(refresh),
-                },
-                "meta": {
-                    "timestamp": now().isoformat(),
-                    "apiVersion": config("API_DEFAULT_VERSION", default="v1"),
-                },
+        payload = {
+            "data": {
+                "organizations": tenant_serializer.data,
+                "accessToken": str(refresh.access_token),
+                "refreshToken": str(refresh),
             },
-            status=status.HTTP_200_OK,
-        )
+            "meta": {
+                "timestamp": now().isoformat(),
+                "apiVersion": config("API_DEFAULT_VERSION", default="v1"),
+            },
+        }
+
+        cache.set(cache_key, payload, config("CACHE_TIMEOUT", default=300, cast=int))
+        return Response(payload, status=status.HTTP_200_OK)
 
     def get_serializer(self, *args, **kwargs):
         kwargs["context"] = self.get_serializer_context()

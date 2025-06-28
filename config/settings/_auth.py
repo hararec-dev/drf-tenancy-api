@@ -26,7 +26,7 @@ AUTH_USER_MODEL = "users.User"
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(
-        minutes=config("ACCESS_TOKEN_LIFETIME", default=5, cast=int)
+        minutes=config("ACCESS_TOKEN_LIFETIME", default=1440, cast=int)
     ),
     "REFRESH_TOKEN_LIFETIME": timedelta(
         days=config("REFRESH_TOKEN_LIFETIME", default=1, cast=int)

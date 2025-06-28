@@ -16,6 +16,7 @@ uvicorn = "*"
 psycopg2-binary = "*"
 django-allauth = "*"
 dj-rest-auth = "*"
+django-redis = "*"
 
 [dev-packages]
 black = "*"
