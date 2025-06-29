@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import Permission
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -48,6 +49,15 @@ class Tenant(BaseAuditModel):
     )
     onboarding_completed_at = models.DateTimeField(
         _("onboarding completed at"), null=True, blank=True
+    )
+    available_credits = models.DecimalField(
+        _("available credits"), max_digits=12, decimal_places=2, default=0
+    )
+    billing_strategy = models.CharField(
+        _("billing strategy"), max_length=50, default="subscription"
+    )
+    data_retention_policy = models.JSONField(
+        _("data retention policy"), null=True, blank=True
     )
 
     def __str__(self):
@@ -112,8 +122,6 @@ class Role(TimestampedModel):
     permissions = models.ManyToManyField(
         Permission, through="RolePermission", verbose_name=_("permissions")
     )
-    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
-    updated_at = models.DateTimeField(_("updated at"), auto_now=True)
 
     def __str__(self):
         if self.tenant:
@@ -193,9 +201,6 @@ class Department(BaseAuditModel):
     legal_name = models.CharField(
         _("legal name"), max_length=200, blank=True, null=True
     )
-    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
-    updated_at = models.DateTimeField(_("updated at"), auto_now=True)
-    deleted_at = models.DateTimeField(_("deleted at"), null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -235,3 +240,74 @@ class UserDepartmentRole(models.Model):
             models.Index(fields=["user"], name="idx_dept_users_user_id"),
             models.Index(fields=["department"], name="idx_dept_users_dept_id"),
         ]
+
+
+class Invitation(TimestampedModel):
+    """
+    Stores invitations for new users to join an organization.
+    Corresponds to the 'invitations' table.
+    """
+
+    class Status(models.TextChoices):
+        PENDING = "pending", _("Pending")
+        ACCEPTED = "accepted", _("Accepted")
+        EXPIRED = "expired", _("Expired")
+        REVOKED = "revoked", _("Revoked")
+
+    tenant = models.ForeignKey(
+        Tenant, on_delete=models.CASCADE, verbose_name=_("tenant")
+    )
+    department = models.ForeignKey(
+        Department, on_delete=models.CASCADE, verbose_name=_("organization")
+    )
+    invited_by_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_("invited by")
+    )
+    role = models.ForeignKey(
+        Role, on_delete=models.CASCADE, verbose_name=_("assigned role")
+    )
+    invitee_email = models.EmailField(_("invitee email"))
+    token = models.CharField(_("token"), max_length=64, unique=True)
+    status = models.CharField(
+        _("status"), max_length=50, choices=Status.choices, default=Status.PENDING
+    )
+    expires_at = models.DateTimeField(_("expires at"))
+
+    class Meta:
+        db_table = "invitations"
+        verbose_name = _("invitation")
+        verbose_name_plural = _("invitations")
+        indexes = [
+            models.Index(fields=["tenant"], name="idx_invitations_tenant_id"),
+            models.Index(fields=["department"], name="idx_invit_dep_id"),
+        ]
+
+
+class TenantAuditPolicy(models.Model):
+    """
+    Defines audit policies for a tenant.
+    Corresponds to the 'tenant_audit_policies' table.
+    """
+
+    tenant = models.OneToOneField(
+        Tenant,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        verbose_name=_("tenant"),
+    )
+    log_retention_days = models.IntegerField(_("log retention days"), default=365)
+    require_log_signatures = models.BooleanField(
+        _("require log signatures"), default=False
+    )
+    sensitive_tables = ArrayField(
+        models.TextField(),
+        verbose_name=_("sensitive tables"),
+        default=list,
+        blank=True,
+        help_text=_("Tables that are logged in sensitive_access_logs."),
+    )
+
+    class Meta:
+        db_table = "tenant_audit_policies"
+        verbose_name = _("tenant audit policy")
+        verbose_name_plural = _("tenant audit policies")

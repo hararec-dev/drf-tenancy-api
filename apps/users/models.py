@@ -17,14 +17,6 @@ class User(AbstractBaseUser, BaseAuditModel, PermissionsMixin):
     Corresponds to the 'users' table.
     """
 
-    tenant = models.ForeignKey(
-        Tenant,
-        on_delete=models.CASCADE,
-        verbose_name=_("tenant"),
-        null=True,
-        blank=True,
-        help_text=_("The tenant the user belongs to. Null for system superadmins."),
-    )
     email = models.EmailField(_("email"), max_length=255, unique=True)
     first_name = models.CharField(_("first name"), max_length=255, blank=True)
     last_name = models.CharField(_("last name"), max_length=255, blank=True)
@@ -47,13 +39,6 @@ class User(AbstractBaseUser, BaseAuditModel, PermissionsMixin):
         db_table = "users"
         verbose_name = _("user")
         verbose_name_plural = _("users")
-        unique_together = [["tenant", "email"]]
-        indexes = [
-            models.Index(fields=["tenant"], name="idx_users_tenant_id"),
-            models.Index(
-                fields=["tenant", "is_active"], name="idx_users_tenant_id_is_active"
-            ),
-        ]
 
     def __str__(self):
         return self.email
