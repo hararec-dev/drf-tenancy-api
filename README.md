@@ -1,91 +1,195 @@
-# 🚀 Boilerplate - API Django REST Framework
+# 🚀 DRF Tenancy API
 
-**🔍 Descripción General** 
-Boilerplate para API con Django REST Framework (Python) usando una arquitectura organizada (siguiendo las convenciones de Django y DRF), Docker y buenas prácticas. Está inspirado en las convenciones de Django y patrones comunes de la comunidad. 
 
-> Incluye herramientas de calidad de código como Black para formateo, pre-commit para hooks de git, pytest y pytest-django para testing, coverage para medición de cobertura de código, y flake8 para análisis estático, asegurando así los más altos estándares de desarrollo.
+## Descripción
+
+Una API **multi-tenant** escalable construida con **Django REST Framework**, pensada como base para proyectos **SaaS**. Gestiona múltiples clientes de forma aislada, rápida y segura. Incluye configuraciones listas para desarrollo y producción, despliegue escalable, calidad de código garantizada y diseño para soportar miles de conexiones simultáneas sin degradar la latencia.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/github/v/release/hararec-dev/drf-tenancy-api)](https://github.com/hararec-dev/drf-tenancy-api/releases)
+[![Last Commit](https://img.shields.io/github/last-commit/hararec-dev/drf-tenancy-api)](https://github.com/hararec-dev/drf-tenancy-api/commits/main)
+[![Issues](https://img.shields.io/github/issues/hararec-dev/drf-tenancy-api)](https://github.com/hararec-dev/drf-tenancy-api/issues)
+[![Language](https://img.shields.io/github/languages/top/hararec-dev/drf-tenancy-api)](https://github.com/hararec-dev/drf-tenancy-api)
+[![Contributors](https://img.shields.io/github/contributors/hararec-dev/drf-tenancy-api)](https://github.com/hararec-dev/drf-tenancy-api/graphs/contributors)
+[![Stars](https://img.shields.io/github/stars/hararec-dev/drf-tenancy-api)](https://github.com/hararec-dev/drf-tenancy-api)
+
+---
+
+## 🌟 Características Principales
+
+* ✅ **Multi-Tenant**: Soporte nativo para múltiples inquilinos con aislamiento de datos.
+* ✅ **PostgreSQL**: Esquema de base de datos normalizado y optimizado para arquitecturas multi-tenant.
+* ✅ **Docker & Docker Compose**: Configuraciones dedicadas para entornos de desarrollo y producción.
+* ✅ **Reverse Proxy y Balanceo de Carga**: Configuración robusta usando Nginx.
+* ✅ **ASGI Server**: Uvicorn con Gunicorn para manejo eficiente de conexiones concurrentes y hot-reload opcional.
+* ✅ **Caching**: Integración con Redis para almacenamiento en caché.
+* ✅ **Rate Limiting y Throttling**: Control de acceso y uso de la API para proteger contra ataques DDoS.
+* ✅ **Vistas basadas en clases (CBV)**: Organización escalable y reutilizable.
+* ✅ **Permisos y control de acceso**: Basado en roles y policies personalizables.
+* ✅ **Paginación, Búsqueda y Filtrado**: Soporte listo para integrarse con listas de resultados.
+* ✅ **Versionado de la API**: Versiones futuras sin romper contratos existentes.
+* ✅ **Manejo de Excepciones**: Sistema centralizado para respuestas coherentes.
+* ✅ **CORS**: Configurable para acceso controlado desde frontends externos.
+* ✅ **Documentación Automática**: Swagger/OpenAPI y ReDoc integrados.
+* ✅ **Logging y Monitoreo**: Configuraciones para trazabilidad y debugging.
+* ✅ **Configuración y Buenas Prácticas**: flake8, black, isort, pre-commit, Pipenv.
+* ✅ **Registro de Datos**: Auditoría básica con logging persistente de acciones clave.
+<!-- * ✅ **Tareas Asíncronas**: Uso de Celery con RabbitMQ para procesamiento en segundo plano. -->
+<!-- * ✅ **Carga y Envió de Archivos**: Endpoints para subir y descargar archivos. -->
+
+<!-- ---
 
 ## 📚 Tabla de Contenidos
-1. [Requisitos Previos](#⚙️-requisitos-previos)
-2. [Instalación](#🛠️-instalación)
-3. [Contribución](#👥-contribución)
-4. [Licencia](#📜-licencia)
-5. [Documentación Extra](#📄-documentación-extra)
 
-## ⚙️ Requisitos Previos
-* Python 3.13.4+ y Pipenv
-* Docker 24.0+ y Docker Compose
+1. [Requisitos Previos](#-requisitos-previos)
+2. [Instalación Rápida](#-instalaci%C3%B3n-r%C3%A1pida)
+3. [Uso](#-uso)
 
-## 🛠️ Instalación
+   * [Entorno de Desarrollo](#entorno-de-desarrollo)
+   * [Entorno de Producción](#entorno-de-producci%C3%B3n)
+4. [Documentación de la API](#-documentaci%C3%B3n-de-la-api)
+5. [Testing](#-testing)
+6. [CI/CD](#-cicd)
+5. [Contribución](#-contribuci%C3%B3n)
+6. [Licencia](#-licencia)
+7. [Contacto](#-contacto) -->
 
-### 1. Clonar el repositorio
+---
+
+## 🛠️ Requisitos Previos
+
+* **Python** 3.13.4+ & `pipenv`
+* **Docker** 24.0+
+* **Docker Compose**  v2+
+
+---
+
+## ⚡ Instalación Rápida
+
+### 1. Clonar y configurar
 
 ```bash
-git clone git@github.com:hararec-dev/boilerplate-api-drf.git
-cd boilerplate-api-drf
+# Clonar el repositorio (es buena práctica usar SSH)
+git clone git@github.com:hararec-dev/drf-tenancy-api.git
+```
+
+```bash
+# Entrar al directorio del proyecto
+cd drf-tenancy-api
+```
+
+```bash
+# Crear archivo de entorno a partir del ejemplo
 cp .env.example .env
-# (Opcional) Personaliza el archivo .env según tus necesidades
 ```
+
+> Personaliza variables en `.env` según tu entorno
 
 ---
 
-### 2. Configuración para desarrollo local
+### 2. Entorno de Desarrollo
 
 ```bash
-# Instala los hooks de pre-commit
-pre-commit install
-
-# (Opcional) Ejecuta todos los linters y formateadores manualmente
-pre-commit run --all-files
-
-# Levanta una base de datos local con Docker
-docker compose -f docker-compose.dev.yml up -d --build
-
-# Instala las dependencias del entorno virtual
+# Instalar las dependencias del entorno virtual
 pipenv install --dev
-pipenv shell
-
-# Aplica las migraciones
-python manage.py makemigrations
-python manage.py migrate
-
-# Inicia el servidor de desarrollo
-python manage.py runserver
 ```
 
-> La API estará disponible en: [http://localhost:8000](http://localhost:8000)
+```bash
+# Activar el entorno virtual
+pipenv shell
+```
+
+```bash
+# Instalar los hooks de pre-commit
+pre-commit install
+```
+
+```bash
+# Levantar los servicios (API, DB, Redis, etc.) en modo desarrollo
+docker compose -f docker-compose.dev.yml up -d --build
+```
+
+```bash
+# Crear archivos de migraciones
+python manage.py makemigrations
+```
+
+```bash
+# Aplicar migraciones a la base de datos
+python manage.py migrate
+```
+
+```bash
+# Iniciar el servidor de desarrollo
+python manage.py runserver 0.0.0.0:8000
+```
+
+> API disponible en: [http://localhost:8000](http://localhost:8000)
 
 ---
 
-### 3. Configuración para producción
+### 3. Entorno de Producción
 
 ```bash
-# Ejecuta la API con múltiples instancias (por ejemplo: n=2)
-docker compose -f docker-compose.prod.yml up -d --build --scale api=n
-
-# Puedes acceder al contenedor de la API con:
-docker exec -it boilerplate-api-drf-api-1 /bin/bash
+# Ejecutar la API con múltiples instancias (por ejemplo: n=2)
+docker compose -f docker-compose.prod.yml up -d --build --scale api=2
 ```
 
+```bash
+# Acceder al contenedor de la API
+docker exec -it $(docker ps -qf "name=drf-tenancy-api_api") bash
+```
 
+---
 
-## 👥 Contribución
-1. Haz fork del proyecto (https://github.com/hararec-dev/boilerplate-api-drf.git)
-2. Crea tu branch: git checkout -b feature/nueva-funcionalidad
-3. Realiza tus cambios y haz commit: git commit -m "Agrega nueva funcionalidad"
-4. Push al branch: git push origin feature/nueva-funcionalidad
-5. Abre un Pull Request.
+## 📄 Documentación de la API
+
+Automáticamente generada con Swagger/OpenAPI:
+
+* Swagger UI: `http://<host>/api/schema/swagger-ui`
+* ReDoc: `http://<host>/api/schema/redoc`
+
+<!-- ---
+
+## 🚦 Testing
+
+```bash
+# Ejecutar tests y generar reporte de cobertura
+docker compose -f docker-compose.dev.yml run --rm api pytest --cov=.
+```
+
+---
+
+## 🤖 CI/CD
+
+La carpeta `.github/workflows/ci.yml` incluye un pipeline que:
+
+1. Instala dependencias
+2. Ejecuta linters y formateo
+3. Corre pruebas y verifica cobertura mínima
+4. Publica badge de estado en el README -->
+
+---
+
+## 🤝 Contribución
+
+1. Haz fork del repositorio
+2. Crea tu rama: `git checkout -b feature/tu-mejora`
+3. Realiza tus cambios y haz commit: `git commit -m "feat: descripción de tu mejora"`
+4. Envía tu rama: `git push origin feature/tu-mejora`
+5. Abre un Pull Request y describe tu contribución.
+
+---
 
 ## 📜 Licencia
-MIT License - Ver [LICENSE](LICENCE) para más detalles.
 
-* 🔄 Estado Actual: En desarrollo activo
-* 🌐 ¡Visita mi web!: https://hararecdev.com
+Este proyecto está licenciado bajo MIT License. Consulta el archivo [LICENSE](LICENSE) para más información.
 
-## 📄 Documentación Extra
-Aquí puedes encontrar las plantillas de documentación utilizadas en este proyecto:
-* [Documento de Especificación de Requisitos de Software (ERS)](./docs/ERS.md)
-* [Documentación de Operaciones (OpsDocs)](./docs/OPS_DOCS.md)
-* [Software Design Document (SDD)](./docs/SDD.md)
-* [Documentación de Visión del Producto (Vision)](./docs/VISION.md)
-* [Management Plan (Plan de Gestión)](./docs/MANAGEMENT_PLAN.md)
+---
+
+## 📬 Contacto
+
+* **Web**: [https://hararecdev.com](https://hararecdev.com)
+* **Email**: [hararecdev@gmail.com](mailto:hararecdev@gmail.com)
+
+> *Estado Actual: Desarrollo activo 🚧*
