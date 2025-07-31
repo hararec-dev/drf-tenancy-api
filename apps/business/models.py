@@ -41,7 +41,7 @@ class Feature(models.Model):
         ),
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.codename
 
     class Meta:
@@ -58,11 +58,11 @@ class Plan(BaseAuditModel):
 
     name = models.CharField(_("name"), max_length=100, unique=True)
     description = models.TextField(_("description"), blank=True, null=True)
-    features = models.ManyToManyField(
+    features: models.ManyToManyField = models.ManyToManyField(
         Feature, through="PlanFeature", verbose_name=_("features")
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     class Meta:
@@ -100,12 +100,8 @@ class PlanPrice(BaseAuditModel):
         MONTHLY = "monthly", _("Monthly")
         ANNUAL = "annual", _("Annual")
 
-    plan = models.ForeignKey(
-        Plan, on_delete=models.CASCADE, related_name="prices", verbose_name=_("plan")
-    )
-    billing_period = models.CharField(
-        _("billing period"), max_length=20, choices=BillingPeriod.choices
-    )
+    plan = models.ForeignKey(Plan, on_delete=models.CASCADE, related_name="prices", verbose_name=_("plan"))
+    billing_period = models.CharField(_("billing period"), max_length=20, choices=BillingPeriod.choices)
     price_amount = models.DecimalField(_("amount"), max_digits=10, decimal_places=2)
     currency = models.CharField(_("currency"), max_length=3, default="USD")
 
@@ -129,15 +125,11 @@ class Subscription(TimestampedModel):
         EXPIRED = "expired", _("Expired")
         TRIALING = "trialing", _("Trialing")
 
-    tenant = models.ForeignKey(
-        Tenant, on_delete=models.CASCADE, verbose_name=_("tenant")
-    )
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, verbose_name=_("tenant"))
     plan = models.ForeignKey(
         Plan, on_delete=models.PROTECT, verbose_name=_("plan")
     )  # Do not delete plan if there are subscribers
-    plan_price = models.ForeignKey(
-        PlanPrice, on_delete=models.PROTECT, verbose_name=_("plan price")
-    )
+    plan_price = models.ForeignKey(PlanPrice, on_delete=models.PROTECT, verbose_name=_("plan price"))
     status = models.CharField(_("status"), max_length=20, choices=Status.choices)
     trial_ends_at = models.DateTimeField(_("trial ends at"), null=True, blank=True)
     current_period_starts_at = models.DateTimeField(_("current period starts at"))
@@ -161,23 +153,15 @@ class FeatureTier(TimestampedModel):
     Corresponds to the 'feature_tiers' table.
     """
 
-    feature = models.ForeignKey(
-        Feature, on_delete=models.CASCADE, verbose_name=_("feature")
-    )
+    feature = models.ForeignKey(Feature, on_delete=models.CASCADE, verbose_name=_("feature"))
     up_to = models.IntegerField(
         _("up to"),
-        help_text=_(
-            "The accumulated usage up to this point. The last tier can have an infinite or very large value."
-        ),
+        help_text=_("The accumulated usage up to this point. The last tier can have an infinite or very large value."),
     )
     unit_price = models.DecimalField(_("unit price"), max_digits=12, decimal_places=6)
-    flat_fee = models.DecimalField(
-        _("flat fee"), max_digits=12, decimal_places=2, default=0
-    )
+    flat_fee = models.DecimalField(_("flat fee"), max_digits=12, decimal_places=2, default=0)
     currency = models.CharField(_("currency"), max_length=3)
-    plan_price = models.ForeignKey(
-        PlanPrice, on_delete=models.CASCADE, verbose_name=_("plan price")
-    )
+    plan_price = models.ForeignKey(PlanPrice, on_delete=models.CASCADE, verbose_name=_("plan price"))
 
     class Meta:
         db_table = "feature_tiers"
@@ -206,12 +190,8 @@ class Coupon(models.Model):
 
     code = models.CharField(_("code"), max_length=100, unique=True)
     description = models.TextField(_("description"), blank=True, null=True)
-    discount_type = models.CharField(
-        _("discount type"), max_length=20, choices=DiscountType.choices
-    )
-    discount_value = models.DecimalField(
-        _("discount value"), max_digits=10, decimal_places=2
-    )
+    discount_type = models.CharField(_("discount type"), max_length=20, choices=DiscountType.choices)
+    discount_value = models.DecimalField(_("discount value"), max_digits=10, decimal_places=2)
     duration = models.CharField(_("duration"), max_length=20, choices=Duration.choices)
     duration_in_months = models.IntegerField(
         _("duration in months"),
@@ -234,7 +214,7 @@ class Coupon(models.Model):
     )
     created_at = models.DateTimeField(_("created at"), auto_now_add=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.code
 
     class Meta:
@@ -263,7 +243,7 @@ class SubscriptionDiscount(models.Model):
     )
     redeemed_at = models.DateTimeField(_("redeemed at"), auto_now_add=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.subscription} - {self.coupon}"
 
     class Meta:
@@ -296,14 +276,10 @@ class CreditLedger(models.Model):
         related_name="credit_transactions",
         verbose_name=_("tenant"),
     )
-    transaction_type = models.CharField(
-        _("transaction type"), max_length=50, choices=TransactionType.choices
-    )
+    transaction_type = models.CharField(_("transaction type"), max_length=50, choices=TransactionType.choices)
     amount = models.BigIntegerField(
         _("amount"),
-        help_text=_(
-            "Positive for purchases/credits, negative for consumption/deductions."
-        ),
+        help_text=_("Positive for purchases/credits, negative for consumption/deductions."),
     )
     balance_after = models.BigIntegerField(
         _("balance after"), help_text=_("The resulting balance after this transaction")
@@ -314,9 +290,7 @@ class CreditLedger(models.Model):
         _("invoice line item ID"),
         null=True,
         blank=True,
-        help_text=_(
-            "Optional: link to the invoice line where credits were purchased/used"
-        ),
+        help_text=_("Optional: link to the invoice line where credits were purchased/used"),
     )
     actor_id = models.BigIntegerField(
         _("actor ID"),
@@ -325,7 +299,7 @@ class CreditLedger(models.Model):
         help_text=_("Optional: The user or system that generated the transaction"),
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.tenant} - {self.transaction_type} - {self.amount}"
 
     class Meta:
@@ -347,12 +321,8 @@ class PlanVersionHistory(models.Model):
     """
 
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE, verbose_name=_("plan"))
-    plan_price = models.ForeignKey(
-        PlanPrice, on_delete=models.CASCADE, verbose_name=_("plan price")
-    )
-    changeset = models.JSONField(
-        _("changeset"), help_text=_("Details of changes (name, description, etc.)")
-    )
+    plan_price = models.ForeignKey(PlanPrice, on_delete=models.CASCADE, verbose_name=_("plan price"))
+    changeset = models.JSONField(_("changeset"), help_text=_("Details of changes (name, description, etc.)"))
     created_at = models.DateTimeField(_("created at"), auto_now_add=True)
     changed_by_user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -380,12 +350,8 @@ class SubscriptionEvent(models.Model):
         CANCEL = "cancel", _("Cancel")
         RENEWAL = "renewal", _("Renewal")
 
-    subscription = models.ForeignKey(
-        Subscription, on_delete=models.CASCADE, verbose_name=_("subscription")
-    )
-    event_type = models.CharField(
-        _("event type"), max_length=50, choices=EventType.choices
-    )
+    subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE, verbose_name=_("subscription"))
+    event_type = models.CharField(_("event type"), max_length=50, choices=EventType.choices)
     event_data = models.JSONField(_("event data"))
     created_at = models.DateTimeField(_("created at"), auto_now_add=True)
 

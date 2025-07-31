@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 
 from django.core.exceptions import ValidationError
 from django.http import Http404
@@ -9,14 +10,10 @@ from rest_framework.views import exception_handler
 logger = logging.getLogger(__name__)
 
 
-def app_exception_handler(exc, context):
+def app_exception_handler(exc: Exception, context: dict[str, Any]) -> Response:
     response = exception_handler(exc, context)
 
-    status_code = (
-        response.status_code
-        if response is not None
-        else status.HTTP_500_INTERNAL_SERVER_ERROR
-    )
+    status_code = response.status_code if response is not None else status.HTTP_500_INTERNAL_SERVER_ERROR
 
     STATUS_CODE_MESSAGES = {
         400: "Bad request",
@@ -64,12 +61,10 @@ def app_exception_handler(exc, context):
 
     _log_error_safely(exc, context, status_code)
 
-    return Response(
-        error_data, status=status_code, headers={"Content-Type": "application/json"}
-    )
+    return Response(error_data, status=status_code, headers={"Content-Type": "application/json"})
 
 
-def _simplify_validation_errors(exc):
+def _simplify_validation_errors(exc: ValidationError) -> dict[str, Any] | str:
     """Simplifies validation errors to avoid exposing internal structure"""
     if hasattr(exc, "message_dict"):
         return {k: str(v[0]) for k, v in exc.message_dict.items()}
@@ -78,15 +73,14 @@ def _simplify_validation_errors(exc):
     return str(exc)
 
 
-def _log_error_safely(exc, context, status_code):
+def _log_error_safely(exc: Exception, context: dict[str, Any], status_code: int) -> None:
     """Logs errors without exposing sensitive information"""
+    request = context.get("request")
     log_data = {
         "exception_type": exc.__class__.__name__,
         "status_code": status_code,
         "view": context.get("view").__class__.__name__ if context.get("view") else None,
-        "request_method": (
-            context.get("request").method if context.get("request") else None
-        ),
+        "request_method": request.method if request else None,
     }
 
     if status_code >= 500:

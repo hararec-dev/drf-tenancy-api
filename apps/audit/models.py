@@ -20,9 +20,7 @@ class AuditLog(models.Model):
         SYSTEM = "system", _("System")
         API_KEY = "api_key", _("API Key")
 
-    tenant = models.ForeignKey(
-        Tenant, on_delete=models.CASCADE, verbose_name=_("tenant")
-    )
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, verbose_name=_("tenant"))
     actor_id = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
@@ -35,9 +33,7 @@ class AuditLog(models.Model):
         max_length=255,
         choices=ActorType.choices,
         default=ActorType.USER,
-        help_text=_(
-            "Distinguishes if the actor was a user, a system process, or an API Key."
-        ),
+        help_text=_("Distinguishes if the actor was a user, a system process, or an API Key."),
     )
     action = models.CharField(
         _("action"),
@@ -52,9 +48,7 @@ class AuditLog(models.Model):
         blank=True,
         verbose_name=_("object type"),
     )
-    target_object_id = models.CharField(
-        _("object ID"), max_length=255, null=True, blank=True
-    )
+    target_object_id = models.CharField(_("object ID"), max_length=255, null=True, blank=True)
     target = GenericForeignKey("target_content_type", "target_object_id")
     details = models.JSONField(_("details"), null=True, blank=True)
     ip_address = models.GenericIPAddressField(_("IP address"), null=True, blank=True)
@@ -77,17 +71,13 @@ class AuditLog(models.Model):
         max_length=255,
         null=True,
         blank=True,
-        help_text=_(
-            "Correlation ID to track a chain of events across microservices or processes."
-        ),
+        help_text=_("Correlation ID to track a chain of events across microservices or processes."),
     )
     reason = models.TextField(
         _("reason"),
         null=True,
         blank=True,
-        help_text=_(
-            "A field for the user or system to explain the reason for the change."
-        ),
+        help_text=_("A field for the user or system to explain the reason for the change."),
     )
     changed_fields = models.JSONField(
         _("changed fields"),
@@ -139,12 +129,8 @@ class AuditMetric(models.Model):
     Corresponds to the 'audit_metrics' table.
     """
 
-    tenant = models.ForeignKey(
-        Tenant, on_delete=models.CASCADE, verbose_name=_("tenant")
-    )
-    feature = models.ForeignKey(
-        Feature, on_delete=models.CASCADE, verbose_name=_("feature")
-    )
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, verbose_name=_("tenant"))
+    feature = models.ForeignKey(Feature, on_delete=models.CASCADE, verbose_name=_("feature"))
     quantity_used = models.BigIntegerField(_("quantity used"))
     measured_at = models.DateTimeField(_("measured at"), auto_now_add=True)
 
@@ -176,9 +162,7 @@ class MetadataAudit(models.Model):
         max_length=255,
         help_text=_("Supports non-integer primary keys."),
     )
-    operation = models.CharField(
-        _("operation"), max_length=10, choices=Operation.choices
-    )
+    operation = models.CharField(_("operation"), max_length=10, choices=Operation.choices)
     before_state = models.JSONField(_("before state"), null=True, blank=True)
     after_state = models.JSONField(_("after state"), null=True, blank=True)
     changed_at = models.DateTimeField(_("changed at"), auto_now_add=True)
@@ -217,9 +201,7 @@ class AuditLogSignature(models.Model):
     )
     signature = models.BinaryField(_("signature"))
     signed_at = models.DateTimeField(_("signed at"), auto_now_add=True)
-    signer_user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name=_("signer")
-    )
+    signer_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name=_("signer"))
 
     class Meta:
         db_table = "audit_log_signatures"
@@ -233,12 +215,8 @@ class SensitiveAccessLog(models.Model):
     Corresponds to the 'sensitive_access_logs' table.
     """
 
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_("user")
-    )
-    tenant = models.ForeignKey(
-        Tenant, on_delete=models.CASCADE, verbose_name=_("tenant")
-    )
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_("user"))
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, verbose_name=_("tenant"))
     accessed_table = models.CharField(_("accessed table"), max_length=255)
     accessed_key = models.CharField(_("accessed key"), max_length=255)
     accessed_at = models.DateTimeField(_("accessed at"), auto_now_add=True)

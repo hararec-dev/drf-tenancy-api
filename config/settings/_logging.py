@@ -1,6 +1,7 @@
 import logging
 import os
 from pathlib import Path
+from typing import Any
 
 from decouple import config
 from django.core.exceptions import ImproperlyConfigured
@@ -21,7 +22,7 @@ except OSError as e:
     raise ImproperlyConfigured(f"Could not create/configure the logs directory: {e}")
 
 
-LOGGING = {
+LOGGING: dict[str, Any] = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
@@ -85,7 +86,7 @@ LOGGING = {
     },
 }
 
-if config("DEBUG", cast=bool):
+if config("DEBUG", default=False, cast=bool):
     # Development
     LOGGING["handlers"].update(
         {

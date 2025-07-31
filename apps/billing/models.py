@@ -20,9 +20,7 @@ class Invoice(TimestampedModel):
         UNCOLLECTIBLE = "uncollectible", _("Uncollectible")
         VOID = "void", _("Voided")
 
-    tenant = models.ForeignKey(
-        Tenant, on_delete=models.CASCADE, verbose_name=_("tenant")
-    )
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, verbose_name=_("tenant"))
     subscription = models.ForeignKey(
         Subscription,
         on_delete=models.SET_NULL,
@@ -30,28 +28,18 @@ class Invoice(TimestampedModel):
         blank=True,
         verbose_name=_("subscription"),
     )
-    status = models.CharField(
-        _("status"), max_length=20, choices=Status.choices, default=Status.DRAFT
-    )
+    status = models.CharField(_("status"), max_length=20, choices=Status.choices, default=Status.DRAFT)
     issued_at = models.DateTimeField(_("issued at"), null=True, blank=True)
     due_date = models.DateField(_("due date"))
     period_start = models.DateField(_("period start"))
     period_end = models.DateField(_("period end"))
     currency = models.CharField(_("currency"), max_length=3, default="USD")
     subtotal = models.DecimalField(_("subtotal"), max_digits=12, decimal_places=2)
-    tax_total = models.DecimalField(
-        _("total taxes"), max_digits=12, decimal_places=2, default=0
-    )
-    discount_total = models.DecimalField(
-        _("total discounts"), max_digits=12, decimal_places=2, default=0
-    )
+    tax_total = models.DecimalField(_("total taxes"), max_digits=12, decimal_places=2, default=0)
+    discount_total = models.DecimalField(_("total discounts"), max_digits=12, decimal_places=2, default=0)
     amount_due = models.DecimalField(_("amount due"), max_digits=12, decimal_places=2)
-    amount_paid = models.DecimalField(
-        _("amount paid"), max_digits=12, decimal_places=2, default=0
-    )
-    invoice_pdf_url = models.URLField(
-        _("invoice PDF URL"), max_length=255, blank=True, null=True
-    )
+    amount_paid = models.DecimalField(_("amount paid"), max_digits=12, decimal_places=2, default=0)
+    invoice_pdf_url = models.URLField(_("invoice PDF URL"), max_length=255, blank=True, null=True)
     gateway_invoice_id = models.CharField(
         _("gateway invoice ID"),
         max_length=255,
@@ -95,9 +83,7 @@ class InvoiceLineItem(models.Model):
     quantity = models.IntegerField(_("quantity"), default=1)
     unit_price = models.DecimalField(_("unit price"), max_digits=12, decimal_places=2)
     amount = models.DecimalField(_("amount"), max_digits=12, decimal_places=2)
-    type = models.CharField(
-        _("type"), max_length=50, choices=LineItemType.choices, blank=True, null=True
-    )
+    type = models.CharField(_("type"), max_length=50, choices=LineItemType.choices, blank=True, null=True)
     period_starts_at = models.DateField(_("period start"), null=True, blank=True)
     period_ends_at = models.DateField(_("period end"), null=True, blank=True)
     usage_feature = models.ForeignKey(
@@ -134,15 +120,9 @@ class PaymentMethod(TimestampedModel):
         PAYPAL = "paypal", _("PayPal")
         BANK_ACCOUNT = "bank_account", _("Bank Account")
 
-    tenant = models.ForeignKey(
-        Tenant, on_delete=models.CASCADE, verbose_name=_("tenant")
-    )
-    method_type = models.CharField(
-        _("method type"), max_length=50, choices=MethodType.choices
-    )
-    gateway_payment_method_id = models.CharField(
-        _("gateway method ID"), max_length=255, unique=True
-    )
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, verbose_name=_("tenant"))
+    method_type = models.CharField(_("method type"), max_length=50, choices=MethodType.choices)
+    gateway_payment_method_id = models.CharField(_("gateway method ID"), max_length=255, unique=True)
     is_default = models.BooleanField(_("is default"), default=False)
     details = models.JSONField(
         _("details"),
@@ -169,9 +149,7 @@ class Payment(TimestampedModel):
         FAILED = "failed", _("Failed")
         REFUNDED = "refunded", _("Refunded")
 
-    tenant = models.ForeignKey(
-        Tenant, on_delete=models.CASCADE, verbose_name=_("tenant")
-    )
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, verbose_name=_("tenant"))
     invoice = models.ForeignKey(
         Invoice,
         on_delete=models.SET_NULL,
@@ -181,9 +159,7 @@ class Payment(TimestampedModel):
     )
     amount = models.DecimalField(_("amount"), max_digits=10, decimal_places=2)
     currency = models.CharField(_("currency"), max_length=3, default="USD")
-    payment_method = models.ForeignKey(
-        PaymentMethod, on_delete=models.PROTECT, verbose_name=_("payment method")
-    )
+    payment_method = models.ForeignKey(PaymentMethod, on_delete=models.PROTECT, verbose_name=_("payment method"))
     gateway_transaction_id = models.CharField(
         _("gateway transaction ID"),
         max_length=255,
@@ -216,9 +192,7 @@ class UsageRecord(models.Model):
     Corresponds to the 'usage_records' table.
     """
 
-    tenant = models.ForeignKey(
-        Tenant, on_delete=models.CASCADE, verbose_name=_("tenant")
-    )
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, verbose_name=_("tenant"))
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
@@ -226,9 +200,7 @@ class UsageRecord(models.Model):
         blank=True,
         verbose_name=_("user"),
     )
-    feature = models.ForeignKey(
-        Feature, on_delete=models.PROTECT, verbose_name=_("feature")
-    )
+    feature = models.ForeignKey(Feature, on_delete=models.PROTECT, verbose_name=_("feature"))
     quantity = models.DecimalField(
         _("quantity"),
         max_digits=18,
@@ -267,16 +239,10 @@ class CreditTransaction(models.Model):
         USAGE = "usage", _("Usage")
         ADJUSTMENT = "adjustment", _("Adjustment")
 
-    tenant = models.ForeignKey(
-        Tenant, on_delete=models.CASCADE, verbose_name=_("tenant")
-    )
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, verbose_name=_("tenant"))
     amount = models.DecimalField(_("amount"), max_digits=12, decimal_places=2)
-    balance_after = models.DecimalField(
-        _("balance after"), max_digits=12, decimal_places=2
-    )
-    transaction_type = models.CharField(
-        _("transaction type"), max_length=20, choices=TransactionType.choices
-    )
+    balance_after = models.DecimalField(_("balance after"), max_digits=12, decimal_places=2)
+    transaction_type = models.CharField(_("transaction type"), max_length=20, choices=TransactionType.choices)
     reference_id = models.BigIntegerField(
         _("reference ID"),
         null=True,

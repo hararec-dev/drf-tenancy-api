@@ -16,12 +16,14 @@ class Role(TimestampedModel):
 
     group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
     description = models.TextField(_("description"), blank=True, null=True)
-    permissions = models.ManyToManyField(
+    permissions: models.ManyToManyField = models.ManyToManyField(
         Permission, through="RolePermission", verbose_name=_("permissions")
     )
 
-    def __str__(self):
-        return f"{self.name} (System Role)"
+    def __str__(self) -> str:
+        if self.group:
+            return f"{self.group.name} (System Role)"
+        return f"Role {self.pk}"
 
     class Meta:
         db_table = "roles"
@@ -54,9 +56,7 @@ class UserTenantRole(models.Model):
         on_delete=models.CASCADE,
         verbose_name=_("user"),
     )
-    tenant = models.ForeignKey(
-        Tenant, on_delete=models.CASCADE, verbose_name=_("tenant")
-    )
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, verbose_name=_("tenant"))
     role = models.ForeignKey(Role, on_delete=models.PROTECT, verbose_name=_("role"))
 
     class Meta:
@@ -81,9 +81,7 @@ class UserDepartmentRole(models.Model):
         on_delete=models.CASCADE,
         verbose_name=_("user"),
     )
-    department = models.ForeignKey(
-        Department, on_delete=models.CASCADE, verbose_name=_("department")
-    )
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, verbose_name=_("department"))
     role = models.ForeignKey(Role, on_delete=models.PROTECT, verbose_name=_("role"))
 
     class Meta:
@@ -111,23 +109,15 @@ class Invitation(TimestampedModel):
         EXPIRED = "expired", _("Expired")
         REVOKED = "revoked", _("Revoked")
 
-    tenant = models.ForeignKey(
-        Tenant, on_delete=models.CASCADE, verbose_name=_("tenant")
-    )
-    department = models.ForeignKey(
-        Department, on_delete=models.CASCADE, verbose_name=_("organization")
-    )
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, verbose_name=_("tenant"))
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, verbose_name=_("organization"))
     invited_by_user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_("invited by")
     )
-    role = models.ForeignKey(
-        Role, on_delete=models.CASCADE, verbose_name=_("assigned role")
-    )
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, verbose_name=_("assigned role"))
     invitee_email = models.EmailField(_("invitee email"))
     token = models.CharField(_("token"), max_length=64, unique=True)
-    status = models.CharField(
-        _("status"), max_length=50, choices=Status.choices, default=Status.PENDING
-    )
+    status = models.CharField(_("status"), max_length=50, choices=Status.choices, default=Status.PENDING)
     expires_at = models.DateTimeField(_("expires at"))
 
     class Meta:

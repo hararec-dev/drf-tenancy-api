@@ -3,6 +3,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.db import models
+from django.db.models.query import QuerySet
 from django.utils.translation import gettext_lazy as _
 
 from apps.core.models import BaseAuditModel
@@ -11,7 +12,7 @@ from apps.tenancies.models import Tenant
 from .managers import UserManager
 
 
-class User(AbstractBaseUser, BaseAuditModel, PermissionsMixin):
+class User(AbstractBaseUser, BaseAuditModel, PermissionsMixin):  # type: ignore[misc]
     """
     Custom user model. A user always belongs to a tenant.
     Corresponds to the 'users' table.
@@ -21,9 +22,7 @@ class User(AbstractBaseUser, BaseAuditModel, PermissionsMixin):
     first_name = models.CharField(_("first name"), max_length=255, blank=True)
     last_name = models.CharField(_("last name"), max_length=255, blank=True)
     avatar_url = models.URLField(_("avatar URL"), max_length=255, blank=True, null=True)
-    mfa_secret = models.CharField(
-        _("MFA secret"), max_length=100, blank=True, null=True
-    )
+    mfa_secret = models.CharField(_("MFA secret"), max_length=100, blank=True, null=True)
     is_staff = models.BooleanField(
         _("staff"),
         default=False,
@@ -40,14 +39,14 @@ class User(AbstractBaseUser, BaseAuditModel, PermissionsMixin):
         verbose_name = _("user")
         verbose_name_plural = _("users")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.email
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         return f"{self.first_name} {self.last_name}".strip()
 
-    def get_tenants(self):
+    def get_tenants(self) -> QuerySet[Tenant]:
         """
         Returns a queryset of all tenants the user is associated with
         through the UserTenantRole model.

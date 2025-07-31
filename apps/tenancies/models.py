@@ -34,9 +34,7 @@ class Tenant(BaseAuditModel):
         blank=True,
         help_text=_("Custom domain for the tenant"),
     )
-    status = models.CharField(
-        _("status"), max_length=50, choices=Status.choices, default=Status.PENDING_SETUP
-    )
+    status = models.CharField(_("status"), max_length=50, choices=Status.choices, default=Status.PENDING_SETUP)
     parent_tenant = models.ForeignKey(
         "self",
         verbose_name=_("parent tenant"),
@@ -45,20 +43,12 @@ class Tenant(BaseAuditModel):
         blank=True,
         help_text=_("For hierarchical structures (resellers, etc.)"),
     )
-    onboarding_completed_at = models.DateTimeField(
-        _("onboarding completed at"), null=True, blank=True
-    )
-    available_credits = models.DecimalField(
-        _("available credits"), max_digits=12, decimal_places=2, default=0
-    )
-    billing_strategy = models.CharField(
-        _("billing strategy"), max_length=50, default="subscription"
-    )
-    data_retention_policy = models.JSONField(
-        _("data retention policy"), null=True, blank=True
-    )
+    onboarding_completed_at = models.DateTimeField(_("onboarding completed at"), null=True, blank=True)
+    available_credits = models.DecimalField(_("available credits"), max_digits=12, decimal_places=2, default=0)
+    billing_strategy = models.CharField(_("billing strategy"), max_length=50, default="subscription")
+    data_retention_policy = models.JSONField(_("data retention policy"), null=True, blank=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     class Meta:
@@ -76,9 +66,7 @@ class TenantConfiguration(TimestampedModel):
     """
 
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
-    data_residency_region = models.CharField(
-        _("data residency region"), max_length=50, default="us-east-1"
-    )
+    data_residency_region = models.CharField(_("data residency region"), max_length=50, default="us-east-1")
     timezone = models.CharField(_("timezone"), max_length=50, default="UTC")
     locale = models.CharField(_("locale"), max_length=10, default="en-US")
     branding = models.JSONField(
@@ -92,7 +80,7 @@ class TenantConfiguration(TimestampedModel):
         help_text=_("Container for various tenant-specific settings."),
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Configuration for {self.tenant.name}"
 
     class Meta:
@@ -107,9 +95,7 @@ class Department(BaseAuditModel):
     Corresponds to the 'departments' table.
     """
 
-    tenant = models.ForeignKey(
-        Tenant, on_delete=models.CASCADE, verbose_name=_("tenant")
-    )
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, verbose_name=_("tenant"))
     parent_department = models.ForeignKey(
         "self",
         on_delete=models.SET_NULL,
@@ -120,11 +106,9 @@ class Department(BaseAuditModel):
     name = models.CharField(_("name"), max_length=255)
     description = models.TextField(_("description"), blank=True, null=True)
     contact_email = models.EmailField(_("contact email"), blank=True, null=True)
-    legal_name = models.CharField(
-        _("legal name"), max_length=200, blank=True, null=True
-    )
+    legal_name = models.CharField(_("legal name"), max_length=200, blank=True, null=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     class Meta:
@@ -150,9 +134,7 @@ class TenantAuditPolicy(models.Model):
         verbose_name=_("tenant"),
     )
     log_retention_days = models.IntegerField(_("log retention days"), default=365)
-    require_log_signatures = models.BooleanField(
-        _("require log signatures"), default=False
-    )
+    require_log_signatures = models.BooleanField(_("require log signatures"), default=False)
     sensitive_tables = ArrayField(
         models.TextField(),
         verbose_name=_("sensitive tables"),

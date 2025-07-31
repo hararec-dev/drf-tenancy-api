@@ -3,11 +3,35 @@ repos:
     rev: 25.1.0
     hooks:
       - id: black
-  - repo: https://github.com/PyCQA/flake8.git
-    rev: 7.3.0
-    hooks:
-      - id: flake8
-  - repo: https://github.com/PyCQA/isort.git
+        language_version: python3
+  - repo: https://github.com/PyCQA/isort
     rev: 6.0.1
     hooks:
       - id: isort
+        name: isort (python)
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.3.0
+    hooks:
+      - id: flake8
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.10.0
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          [
+            "django-stubs[compatible-mypy]==5.0.0",
+            "python-decouple",
+            "djangorestframework",
+            "djangorestframework-simplejwt",
+            "drf-spectacular",
+            "django-cors-headers",
+            "django-redis",
+            "psycopg2-binary",
+          ]
+        args: [--config-file=pyproject.toml]
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.8.6
+    hooks:
+      - id: bandit
+        args: ["-c", "pyproject.toml"]
+        exclude: "tests/"

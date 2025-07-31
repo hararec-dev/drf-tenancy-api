@@ -103,9 +103,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="creditledger",
-            index=models.Index(
-                fields=["tenant", "-created_at"], name="idx_cred_led_ten_created_at"
-            ),
+            index=models.Index(fields=["tenant", "-created_at"], name="idx_cred_led_ten_created_at"),
         ),
         migrations.AlterUniqueTogether(
             name="planfeature",
@@ -121,9 +119,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="featuretier",
-            index=models.Index(
-                fields=["plan_price"], name="idx_feat_tier_plan_price_id"
-            ),
+            index=models.Index(fields=["plan_price"], name="idx_feat_tier_plan_price_id"),
         ),
         migrations.AddIndex(
             model_name="subscription",

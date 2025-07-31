@@ -5,5 +5,5 @@ class AuthenticationConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "apps.authentication"
 
-    def ready(self):
+    def ready(self) -> None:
         from apps.authentication import signals

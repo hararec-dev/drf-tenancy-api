@@ -6,7 +6,7 @@ from logging.handlers import RotatingFileHandler
 class SafeRotatingFileHandler(RotatingFileHandler):
     """Handler that handles errors when writing to the log file"""
 
-    def emit(self, record):
+    def emit(self, record: logging.LogRecord) -> None:
         try:
             return super().emit(record)
         except (PermissionError, OSError) as e:
@@ -24,7 +24,7 @@ class SafeRotatingFileHandler(RotatingFileHandler):
 
 
 class SafeFormatter(logging.Formatter):
-    def format(self, record):
+    def format(self, record: logging.LogRecord) -> str:
         try:
             return super().format(record)
         except (KeyError, ValueError):
@@ -45,9 +45,9 @@ class SafeFormatter(logging.Formatter):
 class MaxLevelFilter(logging.Filter):
     """Allows only messages with a level lower than the specified one (exclusive)."""
 
-    def __init__(self, max_level):
+    def __init__(self, max_level: int) -> None:
         super().__init__()
         self.max_level = max_level
 
-    def filter(self, record):
+    def filter(self, record: logging.LogRecord) -> bool:
         return record.levelno < self.max_level

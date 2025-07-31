@@ -62,15 +62,11 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="usagerecord",
-            index=models.Index(
-                fields=["tenant", "feature"], name="idx_usg_rec_tenant_feat"
-            ),
+            index=models.Index(fields=["tenant", "feature"], name="idx_usg_rec_tenant_feat"),
         ),
         migrations.AddIndex(
             model_name="usagerecord",
-            index=models.Index(
-                fields=["event_time"], name="idx_usage_records_event_time"
-            ),
+            index=models.Index(fields=["event_time"], name="idx_usage_records_event_time"),
         ),
         migrations.AlterUniqueTogether(
             name="invoicelineitemusagerecord",

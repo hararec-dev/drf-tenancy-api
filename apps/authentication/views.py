@@ -1,9 +1,13 @@
+from typing import Any
+
 from decouple import config
 from django.core.cache import cache
 from django.utils.timezone import now
 from rest_framework import status
 from rest_framework.permissions import AllowAny
+from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.serializers import Serializer
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -22,7 +26,7 @@ class UserLoginView(APIView):
     permission_classes = [AllowAny]
     serializer_class = UserLoginSerializer
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         email = request.data.get("email", "")
@@ -52,9 +56,9 @@ class UserLoginView(APIView):
         cache.set(cache_key, payload, config("CACHE_TIMEOUT", default=300, cast=int))
         return Response(payload, status=status.HTTP_200_OK)
 
-    def get_serializer(self, *args, **kwargs):
+    def get_serializer(self, *args: Any, **kwargs: Any) -> Serializer:
         kwargs["context"] = self.get_serializer_context()
         return self.serializer_class(*args, **kwargs)
 
-    def get_serializer_context(self):
+    def get_serializer_context(self) -> dict[str, Any]:
         return {"request": self.request}

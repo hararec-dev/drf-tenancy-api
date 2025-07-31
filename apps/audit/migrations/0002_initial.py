@@ -118,9 +118,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="auditlog",
-            index=models.Index(
-                fields=["tenant", "-created_at"], name="idx_logs_tenant_created_at"
-            ),
+            index=models.Index(fields=["tenant", "-created_at"], name="idx_logs_tenant_created_at"),
         ),
         migrations.AddIndex(
             model_name="auditlog",

@@ -50,24 +50,18 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "issued_at",
-                    models.DateTimeField(
-                        blank=True, null=True, verbose_name="issued at"
-                    ),
+                    models.DateTimeField(blank=True, null=True, verbose_name="issued at"),
                 ),
                 ("due_date", models.DateField(verbose_name="due date")),
                 ("period_start", models.DateField(verbose_name="period start")),
                 ("period_end", models.DateField(verbose_name="period end")),
                 (
                     "currency",
-                    models.CharField(
-                        default="USD", max_length=3, verbose_name="currency"
-                    ),
+                    models.CharField(default="USD", max_length=3, verbose_name="currency"),
                 ),
                 (
                     "subtotal",
-                    models.DecimalField(
-                        decimal_places=2, max_digits=12, verbose_name="subtotal"
-                    ),
+                    models.DecimalField(decimal_places=2, max_digits=12, verbose_name="subtotal"),
                 ),
                 (
                     "tax_total",
@@ -89,9 +83,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "amount_due",
-                    models.DecimalField(
-                        decimal_places=2, max_digits=12, verbose_name="amount due"
-                    ),
+                    models.DecimalField(decimal_places=2, max_digits=12, verbose_name="amount due"),
                 ),
                 (
                     "amount_paid",
@@ -144,15 +136,11 @@ class Migration(migrations.Migration):
                 ("quantity", models.IntegerField(default=1, verbose_name="quantity")),
                 (
                     "unit_price",
-                    models.DecimalField(
-                        decimal_places=2, max_digits=12, verbose_name="unit price"
-                    ),
+                    models.DecimalField(decimal_places=2, max_digits=12, verbose_name="unit price"),
                 ),
                 (
                     "amount",
-                    models.DecimalField(
-                        decimal_places=2, max_digits=12, verbose_name="amount"
-                    ),
+                    models.DecimalField(decimal_places=2, max_digits=12, verbose_name="amount"),
                 ),
                 (
                     "type",
@@ -173,9 +161,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "period_starts_at",
-                    models.DateField(
-                        blank=True, null=True, verbose_name="period start"
-                    ),
+                    models.DateField(blank=True, null=True, verbose_name="period start"),
                 ),
                 (
                     "period_ends_at",
@@ -238,15 +224,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "amount",
-                    models.DecimalField(
-                        decimal_places=2, max_digits=10, verbose_name="amount"
-                    ),
+                    models.DecimalField(decimal_places=2, max_digits=10, verbose_name="amount"),
                 ),
                 (
                     "currency",
-                    models.CharField(
-                        default="USD", max_length=3, verbose_name="currency"
-                    ),
+                    models.CharField(default="USD", max_length=3, verbose_name="currency"),
                 ),
                 (
                     "gateway_transaction_id",
@@ -325,9 +307,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "gateway_payment_method_id",
-                    models.CharField(
-                        max_length=255, unique=True, verbose_name="gateway method ID"
-                    ),
+                    models.CharField(max_length=255, unique=True, verbose_name="gateway method ID"),
                 ),
                 (
                     "is_default",
@@ -377,9 +357,7 @@ class Migration(migrations.Migration):
                 ("event_time", models.DateTimeField(verbose_name="event time")),
                 (
                     "source_ip",
-                    models.GenericIPAddressField(
-                        blank=True, null=True, verbose_name="source IP"
-                    ),
+                    models.GenericIPAddressField(blank=True, null=True, verbose_name="source IP"),
                 ),
                 (
                     "reference_id",
@@ -412,15 +390,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "amount",
-                    models.DecimalField(
-                        decimal_places=2, max_digits=12, verbose_name="amount"
-                    ),
+                    models.DecimalField(decimal_places=2, max_digits=12, verbose_name="amount"),
                 ),
                 (
                     "balance_after",
-                    models.DecimalField(
-                        decimal_places=2, max_digits=12, verbose_name="balance after"
-                    ),
+                    models.DecimalField(decimal_places=2, max_digits=12, verbose_name="balance after"),
                 ),
                 (
                     "transaction_type",

@@ -1,23 +1,19 @@
 from decouple import config
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": config("PAGE_SIZE", default=20, cast=int),
     "MAX_PAGE_SIZE": config("MAX_PAGE_SIZE", default=100, cast=int),
-    "DEFAULT_FILTER_BACKENDS": (
-        "django_filters.rest_framework.DjangoFilterBackend",
-        "rest_framework.filters.SearchFilter",
-        "rest_framework.filters.OrderingFilter",
-    ),
+    #    "DEFAULT_FILTER_BACKENDS": (
+    #        "django_filters.rest_framework.DjangoFilterBackend",
+    #        "rest_framework.filters.SearchFilter",
+    #        "rest_framework.filters.OrderingFilter",
+    #    ),
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",
     "DEFAULT_VERSION": config("API_DEFAULT_VERSION", default="v1"),
-    "ALLOWED_VERSIONS": config(
-        "API_ALLOWED_VERSIONS", default=["v1"], cast=lambda v: v.split(",")
-    ),
+    "ALLOWED_VERSIONS": config("API_ALLOWED_VERSIONS", default="v1", cast=lambda v: v.split(",")),
     "DEFAULT_THROTTLE_CLASSES": (
         "rest_framework.throttling.AnonRateThrottle",
         "rest_framework.throttling.UserRateThrottle",
