@@ -38,9 +38,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="role",
             name="group",
-            field=models.ForeignKey(
-                null=True, on_delete=django.db.models.deletion.CASCADE, to="auth.group"
-            ),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to="auth.group"),
         ),
         migrations.AddField(
             model_name="invitation",
@@ -54,16 +52,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="rolepermission",
             name="permission",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="auth.permission"
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="auth.permission"),
         ),
         migrations.AddField(
             model_name="rolepermission",
             name="role",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="authentication.role"
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="authentication.role"),
         ),
         migrations.AddField(
             model_name="role",

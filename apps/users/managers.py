@@ -1,9 +1,16 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
 from django.contrib.auth import models
 from django.utils.translation import gettext_lazy as _
 
+if TYPE_CHECKING:
+    from apps.users.models import User
 
-class UserManager(models.BaseUserManager):
-    def create_user(self, email, password=None, **extra_fields):
+
+class UserManager(models.BaseUserManager["User"]):
+    def create_user(self, email: str, password: str | None = None, **extra_fields: Any) -> "User":
         if not email:
             raise ValueError(_("Email field is required"))
         email = self.normalize_email(email)
@@ -12,7 +19,7 @@ class UserManager(models.BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password=None, **extra_fields):
+    def create_superuser(self, email: str, password: str | None = None, **extra_fields: Any) -> "User":
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
 

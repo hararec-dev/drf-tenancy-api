@@ -3,19 +3,20 @@ import time
 import uuid
 
 from django.conf import settings
+from django.http import HttpRequest, HttpResponse
 from django.utils.deprecation import MiddlewareMixin
 
 logger = logging.getLogger("django.request")
 
 
 class LoggingMiddleware(MiddlewareMixin):
-    def process_request(self, request):
+    def process_request(self, request: HttpRequest) -> None:
         request_id = request.META.get("HTTP_X_REQUEST_ID", uuid.uuid4().hex)
-        request.request_id = request_id
-        request.start_time = time.time()
+        request.request_id = request_id  # type: ignore[attr-defined]
+        request.start_time = time.time()  # type: ignore[attr-defined]
         return None
 
-    def process_response(self, request, response):
+    def process_response(self, request: HttpRequest, response: HttpResponse) -> HttpResponse:
         duration = time.time() - getattr(request, "start_time", time.time())
         ms_duration = duration * 1000
 
@@ -26,7 +27,7 @@ class LoggingMiddleware(MiddlewareMixin):
         log_context = {
             "user": user,
             "ip": request.META.get("REMOTE_ADDR", ""),
-            "request_id": request.request_id,
+            "request_id": getattr(request, "request_id", "none"),
             "method": request.method,
             "path": request.path,
             "status_code": response.status_code,
@@ -34,10 +35,10 @@ class LoggingMiddleware(MiddlewareMixin):
         }
 
         if settings.DEBUG:
-            response["X-Request-ID"] = request.request_id
+            response["X-Request-ID"] = getattr(request, "request_id", "none")
         else:
             if response.status_code >= 400:
-                response["X-Request-ID"] = request.request_id
+                response["X-Request-ID"] = getattr(request, "request_id", "none")
 
         if response.status_code >= 500:
             logger.error(
@@ -57,16 +58,12 @@ class LoggingMiddleware(MiddlewareMixin):
 
         return response
 
-    def process_exception(self, request, exception):
+    def process_exception(self, request: HttpRequest, exception: Exception) -> None:
         duration = time.time() - getattr(request, "start_time", time.time())
         ms_duration = duration * 1000
 
         log_context = {
-            "user": (
-                request.user.email
-                if hasattr(request, "user") and request.user.is_authenticated
-                else "anonymous"
-            ),
+            "user": (request.user.email if hasattr(request, "user") and request.user.is_authenticated else "anonymous"),
             "ip": request.META.get("REMOTE_ADDR", ""),
             "request_id": getattr(request, "request_id", "none"),
             "method": request.method,

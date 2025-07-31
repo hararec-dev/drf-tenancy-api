@@ -1,3 +1,7 @@
+from typing import Type
+
+from django.db import models
+
 from apps.audit.models import AuditLog, SensitiveAccessLog
 from apps.billing.models import (
     CreditTransaction,
@@ -27,7 +31,7 @@ from apps.users.models import User
 from .models import Invitation, Role
 
 
-def get_permission_to_model_map():
+def get_permission_to_model_map() -> dict[str, Type[models.Model]]:
     permission_to_model_map = {
         "add_tenant": Tenant,
         "change_tenant": Tenant,
@@ -120,7 +124,7 @@ def get_permission_to_model_map():
     return permission_to_model_map
 
 
-def get_group_permissions():
+def get_group_permissions() -> dict[str, list[str]]:
     group_permissions = {
         "PlatformAdmin": [
             "add_tenant",

@@ -27,9 +27,7 @@ class Migration(migrations.Migration):
                 ("password", models.CharField(max_length=128, verbose_name="password")),
                 (
                     "last_login",
-                    models.DateTimeField(
-                        blank=True, null=True, verbose_name="last login"
-                    ),
+                    models.DateTimeField(blank=True, null=True, verbose_name="last login"),
                 ),
                 (
                     "is_superuser",
@@ -54,33 +52,23 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "email",
-                    models.EmailField(
-                        max_length=255, unique=True, verbose_name="email"
-                    ),
+                    models.EmailField(max_length=255, unique=True, verbose_name="email"),
                 ),
                 (
                     "first_name",
-                    models.CharField(
-                        blank=True, max_length=255, verbose_name="first name"
-                    ),
+                    models.CharField(blank=True, max_length=255, verbose_name="first name"),
                 ),
                 (
                     "last_name",
-                    models.CharField(
-                        blank=True, max_length=255, verbose_name="last name"
-                    ),
+                    models.CharField(blank=True, max_length=255, verbose_name="last name"),
                 ),
                 (
                     "avatar_url",
-                    models.URLField(
-                        blank=True, max_length=255, null=True, verbose_name="avatar URL"
-                    ),
+                    models.URLField(blank=True, max_length=255, null=True, verbose_name="avatar URL"),
                 ),
                 (
                     "mfa_secret",
-                    models.CharField(
-                        blank=True, max_length=100, null=True, verbose_name="MFA secret"
-                    ),
+                    models.CharField(blank=True, max_length=100, null=True, verbose_name="MFA secret"),
                 ),
                 (
                     "is_staff",

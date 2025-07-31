@@ -46,9 +46,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "discount_value",
-                    models.DecimalField(
-                        decimal_places=2, max_digits=10, verbose_name="discount value"
-                    ),
+                    models.DecimalField(decimal_places=2, max_digits=10, verbose_name="discount value"),
                 ),
                 (
                     "duration",
@@ -268,9 +266,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "trial_ends_at",
-                    models.DateTimeField(
-                        blank=True, null=True, verbose_name="trial ends at"
-                    ),
+                    models.DateTimeField(blank=True, null=True, verbose_name="trial ends at"),
                 ),
                 (
                     "current_period_starts_at",
@@ -282,9 +278,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "cancel_at_period_end",
-                    models.BooleanField(
-                        default=False, verbose_name="cancel at period end"
-                    ),
+                    models.BooleanField(default=False, verbose_name="cancel at period end"),
                 ),
             ],
             options={
@@ -463,9 +457,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "plan",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="business.plan"
-                    ),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="business.plan"),
                 ),
             ],
             options={
@@ -516,15 +508,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "price_amount",
-                    models.DecimalField(
-                        decimal_places=2, max_digits=10, verbose_name="amount"
-                    ),
+                    models.DecimalField(decimal_places=2, max_digits=10, verbose_name="amount"),
                 ),
                 (
                     "currency",
-                    models.CharField(
-                        default="USD", max_length=3, verbose_name="currency"
-                    ),
+                    models.CharField(default="USD", max_length=3, verbose_name="currency"),
                 ),
                 (
                     "plan",
@@ -571,9 +559,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "unit_price",
-                    models.DecimalField(
-                        decimal_places=6, max_digits=12, verbose_name="unit price"
-                    ),
+                    models.DecimalField(decimal_places=6, max_digits=12, verbose_name="unit price"),
                 ),
                 (
                     "flat_fee",

@@ -20,9 +20,7 @@ urlpatterns = [
         name="redoc",
     ),
     path("api/v1/auth/", include("apps.authentication.urls")),
-    re_path(
-        r"^api/(?P<version>[^/]+)/users", include("apps.users.urls", namespace="users")
-    ),
+    re_path(r"^api/(?P<version>[^/]+)/users", include("apps.users.urls", namespace="users")),
 ]
 
 if settings.DEBUG:

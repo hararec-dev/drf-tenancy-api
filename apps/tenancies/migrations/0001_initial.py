@@ -75,9 +75,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "onboarding_completed_at",
-                    models.DateTimeField(
-                        blank=True, null=True, verbose_name="onboarding completed at"
-                    ),
+                    models.DateTimeField(blank=True, null=True, verbose_name="onboarding completed at"),
                 ),
                 (
                     "available_credits",
@@ -98,9 +96,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "data_retention_policy",
-                    models.JSONField(
-                        blank=True, null=True, verbose_name="data retention policy"
-                    ),
+                    models.JSONField(blank=True, null=True, verbose_name="data retention policy"),
                 ),
                 (
                     "parent_tenant",
@@ -140,9 +136,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "require_log_signatures",
-                    models.BooleanField(
-                        default=False, verbose_name="require log signatures"
-                    ),
+                    models.BooleanField(default=False, verbose_name="require log signatures"),
                 ),
                 (
                     "sensitive_tables",
@@ -192,15 +186,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "timezone",
-                    models.CharField(
-                        default="UTC", max_length=50, verbose_name="timezone"
-                    ),
+                    models.CharField(default="UTC", max_length=50, verbose_name="timezone"),
                 ),
                 (
                     "locale",
-                    models.CharField(
-                        default="en-US", max_length=10, verbose_name="locale"
-                    ),
+                    models.CharField(default="en-US", max_length=10, verbose_name="locale"),
                 ),
                 (
                     "branding",
@@ -273,9 +263,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "legal_name",
-                    models.CharField(
-                        blank=True, max_length=200, null=True, verbose_name="legal name"
-                    ),
+                    models.CharField(blank=True, max_length=200, null=True, verbose_name="legal name"),
                 ),
                 (
                     "parent_department",
@@ -300,9 +288,7 @@ class Migration(migrations.Migration):
                 "verbose_name": "department",
                 "verbose_name_plural": "departments",
                 "db_table": "departments",
-                "indexes": [
-                    models.Index(fields=["tenant"], name="idx_departments_tenant_id")
-                ],
+                "indexes": [models.Index(fields=["tenant"], name="idx_departments_tenant_id")],
                 "unique_together": {("tenant", "name")},
             },
         ),

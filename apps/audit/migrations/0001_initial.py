@@ -47,9 +47,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "target_object_id",
-                    models.CharField(
-                        blank=True, max_length=255, null=True, verbose_name="object ID"
-                    ),
+                    models.CharField(blank=True, max_length=255, null=True, verbose_name="object ID"),
                 ),
                 (
                     "details",
@@ -57,9 +55,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "ip_address",
-                    models.GenericIPAddressField(
-                        blank=True, null=True, verbose_name="IP address"
-                    ),
+                    models.GenericIPAddressField(blank=True, null=True, verbose_name="IP address"),
                 ),
                 (
                     "created_at",
@@ -213,9 +209,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "before_state",
-                    models.JSONField(
-                        blank=True, null=True, verbose_name="before state"
-                    ),
+                    models.JSONField(blank=True, null=True, verbose_name="before state"),
                 ),
                 (
                     "after_state",
@@ -258,9 +252,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "query_params",
-                    models.JSONField(
-                        blank=True, null=True, verbose_name="query params"
-                    ),
+                    models.JSONField(blank=True, null=True, verbose_name="query params"),
                 ),
             ],
             options={

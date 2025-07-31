@@ -1,5 +1,7 @@
 import logging
+from typing import Any, Type
 
+from django.apps import AppConfig
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.signals import post_migrate
@@ -12,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 @receiver(post_migrate)
-def create_groups_with_permissions(sender, **kwargs):
+def create_groups_with_permissions(sender: Type[AppConfig], **kwargs: Any) -> None:
     """
     Signal runs after each migration to create and assign
     groups (roles) and permissions.
@@ -34,16 +36,12 @@ def create_groups_with_permissions(sender, **kwargs):
         for codename in perm_codenames:
             model_class = permission_to_model_map.get(codename)
             if not model_class:
-                logger.warning(
-                    f"Permission '{codename}' in group '{group_name}' has no model mapped. Skipping."
-                )
+                logger.warning(f"Permission '{codename}' in group '{group_name}' has no model mapped. Skipping.")
                 continue
 
             try:
                 content_type = ContentType.objects.get_for_model(model_class)
-                permission = Permission.objects.get(
-                    codename=codename, content_type=content_type
-                )
+                permission = Permission.objects.get(codename=codename, content_type=content_type)
                 permissions_for_group.append(permission)
             except Permission.DoesNotExist:
                 permission = Permission.objects.create(
@@ -52,13 +50,9 @@ def create_groups_with_permissions(sender, **kwargs):
                     content_type=content_type,
                 )
                 permissions_for_group.append(permission)
-                logger.debug(
-                    f"  Permission '{codename}' created for model '{model_class._meta.model_name}'."
-                )
+                logger.debug(f"  Permission '{codename}' created for model '{model_class._meta.model_name}'.")
             except Exception as e:
-                logger.error(
-                    f"Could not get/create permission '{codename}'. Error: {e}"
-                )
+                logger.error(f"Could not get/create permission '{codename}'. Error: {e}")
 
         group.permissions.set(permissions_for_group)
         role, role_created = Role.objects.update_or_create(
